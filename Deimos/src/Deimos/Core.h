@@ -11,11 +11,6 @@
     #error "Deimos only supports Windows"
 #endif
 
-
-
-class Core {
-
-};
-
+#define BIT(x) (1 << x)
 
 #endif //ENGINE_CORE_H

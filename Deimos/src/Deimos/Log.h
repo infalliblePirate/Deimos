@@ -3,7 +3,9 @@
 
 #include "Core.h"
 #include "memory"
-#include "../../vendor/spdlog/include/spdlog/spdlog.h"
+#include "spdlog/spdlog.h"
+// #include "spdlog/fmt/ostr.h" // supposedly used by spdLog, but works fine without it :)
+
 
 namespace Deimos {
     class DM_API Log {

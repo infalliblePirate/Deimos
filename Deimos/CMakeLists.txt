@@ -6,16 +6,17 @@ add_library(Deimos SHARED
         src/Deimos/Log.h
         src/Deimos/Log.cpp
         src/Deimos/EntryPoint.h
+        src/Deimos/Events
 )
+
+# Set include directories for the library
+target_include_directories(Deimos PUBLIC src)
 
 # Path to splog CMakeLists.txt
 add_subdirectory(vendor/spdlog)
 
 # Add spdlog library
 target_link_libraries(Deimos PUBLIC spdlog::spdlog)
-
-# Set include directories for the library
-target_include_directories(Deimos PUBLIC src)
 
 # Set output directory for the DLL library
 set_target_properties(Deimos PROPERTIES
