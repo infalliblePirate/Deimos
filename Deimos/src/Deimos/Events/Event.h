@@ -2,11 +2,6 @@
 #define ENGINE_EVENT_H
 
 #include "Deimos/Core.h"
-#include <string>
-#include <functional>
-// #include "../vendor/spdlog/include/spdlog/fmt/bundled/format.h" // should be included if\
-formatter<T> used to support custom data ?
-
 
 namespace Deimos {
 
@@ -79,14 +74,5 @@ namespace Deimos {
     }
 
 }
-
-/*template<>
-struct fmt::formatter<Deimos::Event> {
-
-    template <typename FormatContext>
-    auto format(const Deimos::Event& e, FormatContext& ctx) -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "{}", e.toString());
-    }
-};*/
 
 #endif //ENGINE_EVENT_H

@@ -1,7 +1,6 @@
 #ifndef ENGINE_MOUSEEVENT_H
 #define ENGINE_MOUSEEVENT_H
 
-#include <sstream>
 #include "Event.h"
 
 namespace Deimos {

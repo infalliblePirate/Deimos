@@ -1,7 +1,6 @@
 #ifndef ENGINE_KEYEVENT_H
 #define ENGINE_KEYEVENT_H
 
-#include <sstream>
 #include "Event.h"
 
 namespace Deimos {
@@ -40,6 +39,7 @@ namespace Deimos {
     };
 
     class DM_API KeyReleasedEvent : public KeyEvent {
+    public:
         KeyReleasedEvent(int keycode) : KeyEvent(keycode) {
 
         }

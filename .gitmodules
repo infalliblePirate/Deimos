@@ -1,3 +1,6 @@
 [submodule "Deimos/vendor/spdlog"]
 	path = Deimos/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Deimos/vendor/GLFW"]
+	path = Deimos/vendor/GLFW
+	url = https://github.com/glfw/glfw.git

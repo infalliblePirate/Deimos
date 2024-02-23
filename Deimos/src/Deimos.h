@@ -3,7 +3,6 @@
 
 //---------------FOR DEIMOS APPLICATIONS ONLY--------------
 #include "Deimos/Application.h"
-#include "iostream"
 #include "Deimos/EntryPoint.h"
 //#include "Deimos/Log.h"
 

@@ -1,7 +1,6 @@
 #ifndef ENGINE_APPLICATIONEVENT_H
 #define ENGINE_APPLICATIONEVENT_H
 
-#include <sstream>
 #include "Event.h"
 
 namespace Deimos {

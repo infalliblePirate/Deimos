@@ -9,22 +9,23 @@ add_library(Deimos SHARED
         src/Deimos/Events
 )
 
+# Enable Unity Builds
+file(GLOB_RECURSE ENGINE_SOURCE_FILES "src/*.cpp")
+target_sources(Deimos PRIVATE ${ENGINE_SOURCE_FILES})
+
+# Enable precompiled header for source files
+target_precompile_headers(Deimos PRIVATE "src/dmpch.h")
+
 # Set include directories for the library
 target_include_directories(Deimos PUBLIC src)
 
-# Path to splog CMakeLists.txt
+# Add any other configurations (compiler flags, etc.) as needed
+
+# Path to spdlog CMakeLists.txt
 add_subdirectory(vendor/spdlog)
 
 # Add spdlog library
 target_link_libraries(Deimos PUBLIC spdlog::spdlog)
 
-# Set output directory for the DLL library
-set_target_properties(Deimos PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)
-
-# Set the DM_PLATFORM_WINDOWS and DM_BUILD_DLL macro
 target_compile_definitions(Deimos PRIVATE DM_PLATFORM_WINDOWS DM_BUILD_DLL)
 

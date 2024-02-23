@@ -1,6 +1,13 @@
 # Define the executable target
 add_executable(Sandbox src/SandboxApp.cpp)
 
+# Enable Unity Builds
+file(GLOB_RECURSE SANDBOX_SOURCE_FILES "src/*.cpp")
+target_sources(Sandbox PRIVATE ${SANDBOX_SOURCE_FILES})
+
+# Set include directories for the executable
+target_include_directories(Sandbox PRIVATE src)
+
 # Link the Deimos library to the Sandbox executable
 target_link_libraries(Sandbox PRIVATE Deimos)
 
@@ -11,5 +18,4 @@ add_custom_command(TARGET Sandbox POST_BUILD
         $<TARGET_FILE_DIR:Sandbox>
 )
 
-# Set the DM_PLATFORM_WINDOWS
 target_compile_definitions(Sandbox PRIVATE DM_PLATFORM_WINDOWS)

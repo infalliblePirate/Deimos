@@ -1,7 +1,8 @@
+#include "dmpch.h"
 #include "Application.h"
 #include "Log.h"
 #include "spdlog/sinks/stdout_sinks.h"
-#include "Deimos/Events/MouseEvent.h"
+#include "Deimos/Events/KeyEvent.h"
 
 namespace Deimos {
     Application::Application() {
@@ -14,7 +15,7 @@ namespace Deimos {
 
     void Application::run() {
 
-        MouseScrolledEvent e(5,4);
+        KeyReleasedEvent e(5);
         if (e.isInCategory(EventCategoryApplication)) {
             DM_TRACE(e.toString());
         }
@@ -22,9 +23,6 @@ namespace Deimos {
             DM_TRACE(e.toString());
         }
 
-        /*WindowResizeEvent e(1280, 720);
-        auto logger = spdlog::stdout_logger_mt("console");
-        logger->info(e.toString());*/
         while(true);
     }
 }

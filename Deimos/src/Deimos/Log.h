@@ -2,10 +2,8 @@
 #define ENGINE_LOG_H
 
 #include "Core.h"
-#include "memory"
 #include "spdlog/spdlog.h"
 // #include "spdlog/fmt/ostr.h" // supposedly used by spdLog, but works fine without it :)
-
 
 namespace Deimos {
     class DM_API Log {

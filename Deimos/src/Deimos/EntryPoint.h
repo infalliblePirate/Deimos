@@ -9,7 +9,7 @@ extern Deimos::Application* Deimos::createApplication();
 
 int main(int argc, char **argv) {
     Deimos::Log::init();
-    DM_CORE_WARN("I am warning you");
+    //DM_CORE_WARN("I am warning you");
     DM_CRITICAL("Something went wrong (not really)");
 
     auto app = Deimos::createApplication();
