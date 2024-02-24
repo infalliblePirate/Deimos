@@ -1,6 +1,7 @@
 #ifndef ENGINE_EVENT_H
 #define ENGINE_EVENT_H
 
+#include "dmpch.h"
 #include "Deimos/Core.h"
 
 namespace Deimos {

@@ -19,3 +19,6 @@ add_custom_command(TARGET Sandbox POST_BUILD
 )
 
 target_compile_definitions(Sandbox PRIVATE DM_PLATFORM_WINDOWS)
+
+# Enable c++ exception handling
+target_compile_options(Sandbox PRIVATE -fexceptions)

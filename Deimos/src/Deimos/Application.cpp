@@ -1,12 +1,12 @@
 #include "dmpch.h"
 #include "Application.h"
-#include "Log.h"
 #include "spdlog/sinks/stdout_sinks.h"
-#include "Deimos/Events/KeyEvent.h"
+
+#include "GLFW/glfw3.h"
 
 namespace Deimos {
     Application::Application() {
-
+        m_window = std::unique_ptr<Window>(Window::create());
     }
 
     Application::~Application() {
@@ -14,15 +14,12 @@ namespace Deimos {
     }
 
     void Application::run() {
+        std::cout << "something";
 
-        KeyReleasedEvent e(5);
-        if (e.isInCategory(EventCategoryApplication)) {
-            DM_TRACE(e.toString());
+        while (m_running) {
+            glClearColor(1,1,1,1);
+            glClear(GL_COLOR_BUFFER_BIT);
+            m_window->onUpdate();
         }
-        if (e.isInCategory(EventCategoryInput)) {
-            DM_TRACE(e.toString());
-        }
-
-        while(true);
     }
 }
