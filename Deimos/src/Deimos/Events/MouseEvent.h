@@ -15,7 +15,7 @@ namespace Deimos {
 
         std::string toString() const override {
             std::stringstream ss;
-            ss << "MouseMovedEventL: " << m_mouseX << ", " << m_mouseY;
+            ss << "MouseMovedEvent: " << m_mouseX << ", " << m_mouseY;
             return ss.str();
         }
 
@@ -78,6 +78,7 @@ namespace Deimos {
     };
 
     class DM_API MouseButtonReleasedEvent : public MouseButtonEvent {
+    public:
         MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {
 
         }

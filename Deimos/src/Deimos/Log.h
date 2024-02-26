@@ -3,7 +3,7 @@
 
 #include "Core.h"
 #include "spdlog/spdlog.h"
-// #include "spdlog/fmt/ostr.h" // supposedly used by spdLog, but works fine without it :)
+#include "spdlog/fmt/ostr.h" // MUST BE INCLUDED to support logging custom data
 
 namespace Deimos {
     class DM_API Log {

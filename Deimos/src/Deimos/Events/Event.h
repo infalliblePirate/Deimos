@@ -3,6 +3,7 @@
 
 #include "dmpch.h"
 #include "Deimos/Core.h"
+#include "../vendor/spdlog/include/spdlog/fmt/bundled/format.h" // used to define printable custom data
 
 namespace Deimos {
 
@@ -36,8 +37,11 @@ namespace Deimos {
 
     public:
         virtual EventType getEventType() const = 0;
+
         virtual const char *getName() const = 0;
+
         virtual int getCategoryFlags() const = 0;
+
         virtual std::string toString() const { return getName(); }
 
         inline bool isInCategory(EventCategory category) {
@@ -58,8 +62,8 @@ namespace Deimos {
 
         template<typename T>
         bool dispatch(eventFn<T> func) {
-            if (m_event.getEventType() == T::getStaticType) {
-                m_event.m_handled = func(*(T*) &m_event);
+            if (m_event.getEventType() == T::getStaticType()) {
+                m_event.m_handled = func(*(T *) &m_event);
                 return true;
             }
             return false;
@@ -70,7 +74,7 @@ namespace Deimos {
     };
 
     // defines how to print custom data types
-    inline std::ostream& operator<<(std::ostream& os, const Event& e) {
+    inline std::ostream &operator<<(std::ostream &os, const Event &e) {
         return os << e.toString();
     }
 
