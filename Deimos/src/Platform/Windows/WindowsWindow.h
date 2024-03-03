@@ -28,12 +28,12 @@ namespace Deimos {
         virtual void shutdown();
 
     private:
-        GLFWwindow* m_window; ///// why here?????????
+        GLFWwindow* m_window; // a base window, the whole WindowsWindow : Window is an overall window wtih extra custom data
 
         struct WindowData {
             std::string title;
             unsigned int width, height;
-            bool vSync;
+            bool vSync; // is vertical synchronization set
 
             eventCallbackFn eventCallback;
         };

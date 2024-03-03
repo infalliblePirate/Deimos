@@ -56,14 +56,14 @@ namespace Deimos {
         template<typename T>
         using eventFn = std::function<bool(T &)>;
     public:
-        EventDispatcher(Event &event) : m_event(event) {
+        EventDispatcher(Event &event) : m_event(event) { // create a dispatcher with an occurred event
 
         }
 
         template<typename T>
-        bool dispatch(eventFn<T> func) {
+        bool dispatch(eventFn<T> func) { // eventFn accepts event of a generic type
             if (m_event.getEventType() == T::getStaticType()) {
-                m_event.m_handled = func(*(T *) &m_event);
+                m_event.m_handled = func(*(T*) &m_event); // casts from general Event (m_event) to T (example: onWindowCLose)
                 return true;
             }
             return false;

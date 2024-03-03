@@ -18,7 +18,8 @@ namespace Deimos {
 
     class DM_API Window {
     public:
-        using eventCallbackFn = std::function<void(Event&)>; /// why do we need it?
+        // name wrapper as callbackFn, can store a fun which accepts Event&, returns void
+        using eventCallbackFn = std::function<void(Event&)>;
         virtual ~Window() {}
         virtual void onUpdate() = 0;
 

@@ -54,7 +54,7 @@ target_link_libraries(Deimos PRIVATE glfw)
 find_package(OpenGL REQUIRED)
 target_link_libraries(Deimos PRIVATE OpenGL::GL)
 
-target_compile_definitions(Deimos PRIVATE DM_PLATFORM_WINDOWS DM_BUILD_DLL)
+target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS DM_PLATFORM_WINDOWS DM_BUILD_DLL)
 
 # Set output dirs
 set_target_properties(Deimos PROPERTIES
