@@ -4,6 +4,6 @@
 //---------------FOR DEIMOS APPLICATIONS ONLY--------------
 #include "Deimos/Application.h"
 #include "Deimos/EntryPoint.h"
-//#include "Deimos/Log.h"
+#include "Deimos/Layer.h"
 
 #endif //ENGINE_DEIMOS_H

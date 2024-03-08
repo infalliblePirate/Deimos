@@ -19,12 +19,25 @@ namespace Deimos {
 
     }
 
+    void Application::pushLayer(Deimos::Layer *layer) {
+        m_layerStack.pushLayer(layer);
+    }
+
+    void Application::pushOverlay(Deimos::Layer *overlay) {
+        m_layerStack.pushOverlay(overlay);
+    }
+
     // whenever an even is occurred, it calls this function
     void Application::onEvent(Event &e) {
         EventDispatcher dispatcher(e);
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
 
-        DM_CORE_TRACE("{0}", e);
+        // if handled an event, terminate (starts from overlays or last layers)
+        for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
+            (*--it)->onEvent(e);
+            if (e.handled)
+                break;
+        }
     }
 
 
@@ -32,6 +45,10 @@ namespace Deimos {
         while (m_running) {
             glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            //////////////////////////////
+            for (Layer* layer : m_layerStack)
+                layer->onUpdate();
             m_window->onUpdate();
         }
     }

@@ -48,8 +48,7 @@ namespace Deimos {
             return getCategoryFlags() & category;
         }
 
-    protected:
-        bool m_handled = false;
+        bool handled = false;
     };
 
     class EventDispatcher {
@@ -63,7 +62,7 @@ namespace Deimos {
         template<typename T>
         bool dispatch(eventFn<T> func) { // eventFn accepts event of a generic type
             if (m_event.getEventType() == T::getStaticType()) {
-                m_event.m_handled = func(*(T*) &m_event); // casts from general Event (m_event) to T (example: onWindowCLose)
+                m_event.handled = func(*(T*) &m_event); // casts from general Event (m_event) to T (example: onWindowCLose)
                 return true;
             }
             return false;
