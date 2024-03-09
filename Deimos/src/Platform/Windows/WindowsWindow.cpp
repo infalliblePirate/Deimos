@@ -6,6 +6,8 @@
 #include "Deimos/Events/MouseEvent.h"
 #include "spdlog/details/fmt_helper.h"
 
+#include <glad/glad.h>
+
 namespace Deimos {
     // static because should only be inited once no matter how many windows
     static bool s_GLFInitialized = false;
@@ -46,6 +48,10 @@ namespace Deimos {
 
         m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_window);
+
+        int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        DM_CORE_ASSERT(status, "Failed to initialize Glad");
+
         // m_window will store a pointer to user-derfined data, which could be later accessed
         glfwSetWindowUserPointer(m_window, &m_data);
         setVSync(true);

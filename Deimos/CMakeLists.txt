@@ -2,18 +2,18 @@
 add_library(Deimos SHARED)
 
 find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
+if (CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif()
+endif ()
 
 # Set default build type to Debug
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE  "Debug")
+    set(CMAKE_BUILD_TYPE "Debug")
 endif ()
 
 # Add debug-specific configurations
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for Debug build")
     add_definitions(-DDEBUG)
 
@@ -22,12 +22,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     # Add spdlog library
     target_link_libraries(Deimos PUBLIC spdlog::spdlog)
-endif()
+endif ()
 
 # Add release-specific configurations
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring for Release build")
-endif()
+endif ()
 
 # Enable Unity Builds
 file(GLOB_RECURSE ENGINE_SOURCE_FILES "src/*.cpp")
@@ -54,7 +54,16 @@ target_link_libraries(Deimos PRIVATE glfw)
 find_package(OpenGL REQUIRED)
 target_link_libraries(Deimos PRIVATE OpenGL::GL)
 
-target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS DM_PLATFORM_WINDOWS DM_BUILD_DLL)
+# Set include directories for GLAD
+target_include_directories(Deimos PRIVATE vendor/GLAD/include)
+
+# Add GLAD
+add_library(glad OBJECT "vendor/GLAD/src/glad.c")
+target_include_directories(glad PRIVATE "vendor/GLAD/include")
+target_link_libraries(Deimos PRIVATE glad)
+
+target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS DM_PLATFORM_WINDOWS DM_BUILD_DLL
+        GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
 # Set output dirs
 set_target_properties(Deimos PROPERTIES

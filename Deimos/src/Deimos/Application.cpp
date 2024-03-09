@@ -4,7 +4,7 @@
 #include "Events/ApplicationEvent.h"
 #include "spdlog/sinks/stdout_sinks.h"
 
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
 
 
 namespace Deimos {
