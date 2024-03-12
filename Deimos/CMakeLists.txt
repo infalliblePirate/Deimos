@@ -62,6 +62,35 @@ add_library(glad OBJECT "vendor/GLAD/src/glad.c")
 target_include_directories(glad PRIVATE "vendor/GLAD/include")
 target_link_libraries(Deimos PRIVATE glad)
 
+# Set include directories for IMGUI
+target_include_directories(Deimos PRIVATE vendor/imgui)
+
+# Add imgui
+set(IMGUI_PATH vendor/imgui)
+file(GLOB IMGUI_GLOB
+        ${IMGUI_PATH}/imgui.h
+        ${IMGUI_PATH}/imgui.cpp
+        ${IMGUI_PATH}/imconfig.h
+        ${IMGUI_PATH}/imgui_demo.cpp
+        ${IMGUI_PATH}/imgui_draw.cpp
+        ${IMGUI_PATH}/imgui_internal.h
+        ${IMGUI_PATH}/imstb_rectpack.h
+        ${IMGUI_PATH}/imstb_textedit.h
+        ${IMGUI_PATH}/imstb_truetype.h
+        ${IMGUI_PATH}/imgui_tables.cpp
+        ${IMGUI_PATH}/imgui_widgets.cpp
+
+        # specific bindings...
+        ${IMGUI_PATH}/backends/imgui_impl_glfw.h
+        ${IMGUI_PATH}/backends/imgui_impl_glfw.cpp
+        ${IMGUI_PATH}/backends/imgui_impl_opengl3.h
+        ${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp
+        ${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.cpp)
+add_library(imgui STATIC ${IMGUI_GLOB})
+target_include_directories(imgui PUBLIC ${IMGUI_PATH})
+target_link_libraries(imgui PRIVATE glfw)
+target_link_libraries(Deimos PRIVATE imgui)
+
 target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS DM_PLATFORM_WINDOWS DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 

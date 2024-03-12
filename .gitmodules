@@ -4,3 +4,7 @@
 [submodule "Deimos/vendor/GLFW"]
 	path = Deimos/vendor/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "Deimos/vendor/imgui"]
+	path = Deimos/vendor/imgui
+	url = https://github.com/infalliblePirate/imgui.git
+	branch = docking

@@ -6,11 +6,15 @@
 
 #include <glad/glad.h>
 
-
 namespace Deimos {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+    Application* Application::s_instance = nullptr;
+
     Application::Application() {
+        DM_CORE_ASSERT(!s_instance, "Application already exists!");
+        s_instance = this;
+
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallback(BIND_EVENT_FN(onEvent)); // set onEvent as the callback fun
     }
@@ -19,12 +23,14 @@ namespace Deimos {
 
     }
 
-    void Application::pushLayer(Deimos::Layer *layer) {
+    void Application::pushLayer(Layer *layer) {
         m_layerStack.pushLayer(layer);
+        layer->onAttach();
     }
 
-    void Application::pushOverlay(Deimos::Layer *overlay) {
+    void Application::pushOverlay(Layer *overlay) {
         m_layerStack.pushOverlay(overlay);
+        overlay->onAttach();
     }
 
     // whenever an even is occurred, it calls this function

@@ -6,7 +6,7 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif()
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 project(Engine)
 
 # With this no error like the procedure entry point _zst28__throw_bad could not be located in the dynamic link library

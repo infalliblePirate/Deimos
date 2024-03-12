@@ -1,3 +1,5 @@
+#include <Deimos/ImGui/ImGuiLayer.h>
+
 #include "iostream"
 #include "Deimos.h"
 
@@ -18,6 +20,7 @@ class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
         pushLayer(new ExampleLayer);
+        pushOverlay(new Deimos::ImGuiLayer);
     }
 
     ~Sandbox(){
