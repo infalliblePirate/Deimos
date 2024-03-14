@@ -11,7 +11,7 @@ namespace Deimos {
         None = 0,
         WindowsClose, WindowsResize, WindowFocus, WindowLostFocus, WindowMoved,
         AppTick, AppUpdate, AppRender,
-        KeyPressed, KeyReleased,
+        KeyPressed, KeyReleased, KeyTyped,
         MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
     };
 
@@ -60,7 +60,7 @@ namespace Deimos {
         }
 
         template<typename T>
-        bool dispatch(eventFn<T> func) { // eventFn accepts event of a generic type
+        bool dispatch(eventFn<T> func) { // accepts callable entities
             if (m_event.getEventType() == T::getStaticType()) {
                 m_event.handled = func(*(T*) &m_event); // casts from general Event (m_event) to T (example: onWindowCLose)
                 return true;

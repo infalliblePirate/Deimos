@@ -94,6 +94,13 @@ namespace Deimos {
             }
         });
 
+        glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int keycode) {
+           WindowData &data = *(WindowData*) glfwGetWindowUserPointer(window) ;
+
+            KeyTypedEvent event(keycode);
+            data.eventCallback(event);
+        });
+
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods) {
             WindowData &data = *(WindowData *) glfwGetWindowUserPointer(window);
             switch (action) {

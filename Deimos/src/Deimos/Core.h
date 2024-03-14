@@ -20,5 +20,6 @@
 #endif
 
 #define BIT(x) (1 << x)
+#define DM_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 #endif //ENGINE_CORE_H
