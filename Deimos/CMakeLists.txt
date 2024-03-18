@@ -1,5 +1,32 @@
-# Define the library target
-add_library(Deimos SHARED)
+# Define the interface library
+add_library(_Deimos INTERFACE)
+
+# Group source files based on platform
+set(COMMON_SOURCES src/Deimos/)
+
+if (UNIX)
+    message("The os is linux")
+    set(PLATFORM_SOURCES
+            src/Platform/Linux/LinuxWindow.cpp
+            src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
+    )
+    set(DM_PLATFORM DM_PLATFORM_LINUX)
+elseif (WIN32)
+    message("The os is Windows")
+    set(PLATFORM_SOURCES
+            src/Platform/Windows/WindowsWindow.cpp
+            src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
+    )
+    set(DM_PLATFORM DM_PLATFORM_WINDOWS)
+else()
+    message(FATAL_ERROR "No platform specified!")
+endif ()
+
+# Create the actual shared library target and link with the interface library
+add_library(Deimos ${COMMON_SOURCES} ${PLATFORM_SOURCES})
+
+target_link_libraries(Deimos PRIVATE _Deimos)
+
 
 find_program(CCACHE_FOUND ccache)
 if (CCACHE_FOUND)
@@ -21,6 +48,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_subdirectory(vendor/spdlog)
 
     # Add spdlog library
+    target_compile_options(spdlog PRIVATE -fPIC)
     target_link_libraries(Deimos PUBLIC spdlog::spdlog)
 endif ()
 
@@ -60,6 +88,7 @@ target_include_directories(Deimos PRIVATE vendor/GLAD/include)
 # Add GLAD
 add_library(glad OBJECT "vendor/GLAD/src/glad.c")
 target_include_directories(glad PRIVATE "vendor/GLAD/include")
+target_compile_options(glad PRIVATE -fPIC)
 target_link_libraries(Deimos PRIVATE glad)
 
 # Set include directories for IMGUI
@@ -88,10 +117,12 @@ file(GLOB IMGUI_GLOB
         ${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.cpp)
 add_library(imgui STATIC ${IMGUI_GLOB})
 target_include_directories(imgui PUBLIC ${IMGUI_PATH})
+target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(imgui PRIVATE glfw)
+target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(Deimos PRIVATE imgui)
 
-target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS DM_PLATFORM_WINDOWS DM_BUILD_DLL
+target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
 # Set output dirs

@@ -1,3 +1,9 @@
+if (UNIX)
+    set(DM_PLATFORM DM_PLATFORM_LINUX)
+elseif (WIN32)
+    set(DM_PLATFORM DM_PLATFORM_WINDOWS)
+endif ()
+
 # Define the executable target
 add_executable(Sandbox src/SandboxApp.cpp)
 
@@ -18,7 +24,7 @@ add_custom_command(TARGET Sandbox POST_BUILD
         $<TARGET_FILE_DIR:Sandbox>
 )
 
-target_compile_definitions(Sandbox PRIVATE DM_PLATFORM_WINDOWS)
+target_compile_definitions(Sandbox PRIVATE ${DM_PLATFORM})
 
 # Enable c++ exception handling
 target_compile_options(Sandbox PRIVATE -fexceptions)

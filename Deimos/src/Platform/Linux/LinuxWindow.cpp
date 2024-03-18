@@ -1,12 +1,12 @@
 #include "dmpch.h"
-#include "WindowsWindow.h"
+#include "LinuxWindow.h"
 
 #include "Deimos/Events/KeyEvent.h"
 #include "Deimos/Events/ApplicationEvent.h"
 #include "Deimos/Events/MouseEvent.h"
 #include "spdlog/details/fmt_helper.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 namespace Deimos {
     // static because should only be inited once no matter how many windows
@@ -17,18 +17,18 @@ namespace Deimos {
     }
 
     Window *Window::create(const WindowProps &props) {
-        return new WindowsWindow(props);
+        return new LinuxWindow(props);
     }
 
-    WindowsWindow::WindowsWindow(const WindowProps &props) {
+    LinuxWindow::LinuxWindow(const WindowProps &props) {
         init(props);
     }
 
-    WindowsWindow::~WindowsWindow() {
+    LinuxWindow::~LinuxWindow() {
         shutdown();
     }
 
-    void WindowsWindow::init(const Deimos::WindowProps &props) {
+    void LinuxWindow::init(const Deimos::WindowProps &props) {
         m_data.title = props.title;
         m_data.width = props.width;
         m_data.height = props.height;
@@ -96,7 +96,7 @@ namespace Deimos {
         });
 
         glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int keycode) {
-           WindowData &data = *(WindowData*) glfwGetWindowUserPointer(window) ;
+            WindowData &data = *(WindowData*) glfwGetWindowUserPointer(window) ;
 
             KeyTypedEvent event(keycode);
             data.eventCallback(event);
@@ -133,16 +133,16 @@ namespace Deimos {
         });
     }
 
-    void WindowsWindow::onUpdate() {
+    void LinuxWindow::onUpdate() {
         glfwPollEvents(); // processes window events
         glfwSwapBuffers(m_window); // swaps front and back buffers, presents te rendered image
     }
 
-    void WindowsWindow::shutdown() {
+    void LinuxWindow::shutdown() {
         glfwDestroyWindow(m_window);
     }
 
-    void WindowsWindow::setVSync(bool enabled) {
+    void LinuxWindow::setVSync(bool enabled) {
         if (enabled)
             glfwSwapInterval(1); // sets vertical synchronization with the refresh rate of a monitor
         else
@@ -150,7 +150,7 @@ namespace Deimos {
         m_data.vSync = enabled;
     }
 
-    bool WindowsWindow::isVSync() const {
+    bool LinuxWindow::isVSync() const {
         return m_data.vSync;
     }
 }
