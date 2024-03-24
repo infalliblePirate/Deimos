@@ -17,7 +17,7 @@ elseif (WIN32)
     set(PLATFORM_SOURCES
             src/Platform/Windows/WindowsWindow.cpp
             src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
-            src/Deimos/Input.h
+            src/Platform/Windows/WindowsInput.cpp
     )
     set(DM_PLATFORM DM_PLATFORM_WINDOWS)
 else()
