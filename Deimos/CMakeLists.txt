@@ -9,6 +9,7 @@ if (UNIX)
     set(PLATFORM_SOURCES
             src/Platform/Linux/LinuxWindow.cpp
             src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
+            src/Platform/Linux/LinuxInput.cpp
     )
     set(DM_PLATFORM DM_PLATFORM_LINUX)
 elseif (WIN32)
@@ -16,6 +17,7 @@ elseif (WIN32)
     set(PLATFORM_SOURCES
             src/Platform/Windows/WindowsWindow.cpp
             src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
+            src/Deimos/Input.h
     )
     set(DM_PLATFORM DM_PLATFORM_WINDOWS)
 else()

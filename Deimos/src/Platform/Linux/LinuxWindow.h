@@ -15,6 +15,7 @@ namespace Deimos {
 
         inline unsigned int getWidth() const override { return m_data.width; }
         inline unsigned int getHeight() const override { return m_data.height; }
+        inline void* getNativeWindow() const override { return m_window; }
 
         // Window attributes
         inline void setEventCallback(const eventCallbackFn &callback) override {

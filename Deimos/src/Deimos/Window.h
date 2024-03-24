@@ -33,6 +33,9 @@ namespace Deimos {
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
 
+        // return void pointer to not depend on GLFW library
+        virtual void* getNativeWindow() const = 0;
+
         static Window* create(const WindowProps& props = WindowProps());
     };
 }

@@ -1,8 +1,8 @@
-#ifndef ENGINE_WINDOWSWINDOW_H
-#define ENGINE_WINDOWSWINDOW_H
+#ifndef ENGINE_LINUXWINDOW_H
+#define ENGINE_LINUXWINDOW_H
 
 #include "Deimos/Window.h"
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 namespace Deimos {
 
@@ -15,6 +15,7 @@ namespace Deimos {
 
         inline unsigned int getWidth() const override { return m_data.width; }
         inline unsigned int getHeight() const override { return m_data.height; }
+        inline void* getNativeWindow() const override { return m_window; }
 
         // Window attributes
         inline void setEventCallback(const eventCallbackFn &callback) override {
@@ -41,4 +42,5 @@ namespace Deimos {
     };
 }
 
-#endif //ENGINE_WINDOWSWINDOW_H
+
+#endif //ENGINE_LINUXWINDOW_H
