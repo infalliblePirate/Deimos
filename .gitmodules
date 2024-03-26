@@ -8,3 +8,6 @@
 	path = Deimos/vendor/imgui
 	url = https://github.com/infalliblePirate/imgui.git
 	branch = docking
+[submodule "Deimos/vendor/glm"]
+	path = Deimos/vendor/glm
+	url = https://github.com/g-truc/glm

@@ -124,6 +124,10 @@ target_link_libraries(imgui PRIVATE glfw)
 target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(Deimos PRIVATE imgui)
 
+# Add glm
+add_subdirectory(vendor/glm)
+target_link_libraries(Deimos PRIVATE glm)
+
 target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
