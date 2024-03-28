@@ -2,6 +2,7 @@
 
 #include "iostream"
 #include "Deimos.h"
+#include "imgui/imgui.h"
 
 class ExampleLayer : public Deimos::Layer { // why here?
 public:
@@ -9,6 +10,12 @@ public:
 
     void onUpdate() override {
         DM_INFO("ExampleLayer::Update");
+    }
+
+    virtual  void onImGuiRender() override {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello World!");
+        ImGui::End();
     }
 
     void onEvent(Deimos::Event& event) override {
@@ -20,7 +27,6 @@ class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
         pushLayer(new ExampleLayer);
-        pushOverlay(new Deimos::ImGuiLayer);
     }
 
     ~Sandbox(){

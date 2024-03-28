@@ -9,20 +9,4 @@ namespace Deimos {
         
     }
 
-    void Layer::onAttach() {
-
-    }
-
-    void Layer::onDetach() {
-
-    }
-
-    void Layer::onUpdate() {
-
-    }
-
-    void Layer::onEvent(Deimos::Event &event) {
-
-    }
-
 }

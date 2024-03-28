@@ -6,17 +6,15 @@ set(COMMON_SOURCES src/Deimos/)
 
 if (UNIX)
     message("The os is linux")
-    set(PLATFORM_SOURCES
+    list(APPEND PLATFORM_SOURCES
             src/Platform/Linux/LinuxWindow.cpp
-            src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
             src/Platform/Linux/LinuxInput.cpp
     )
     set(DM_PLATFORM DM_PLATFORM_LINUX)
 elseif (WIN32)
     message("The os is Windows")
-    set(PLATFORM_SOURCES
+    list(APPEND PLATFORM_SOURCES
             src/Platform/Windows/WindowsWindow.cpp
-            src/Platform/OpenGL/ImGuiOpenGLRenderer.cpp
             src/Platform/Windows/WindowsInput.cpp
     )
     set(DM_PLATFORM DM_PLATFORM_WINDOWS)
@@ -24,7 +22,6 @@ else()
     message(FATAL_ERROR "No platform specified!")
 endif ()
 
-# Create the actual shared library target and link with the interface library
 add_library(Deimos ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
 target_link_libraries(Deimos PRIVATE _Deimos)
@@ -68,6 +65,7 @@ target_precompile_headers(Deimos PRIVATE "src/dmpch.h")
 
 # Set include directories for the library
 target_include_directories(Deimos PUBLIC src)
+target_include_directories(Deimos PUBLIC vendor)
 
 # glfw disable the build for tests, examples, documentation:
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -118,15 +116,18 @@ file(GLOB IMGUI_GLOB
         ${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp
         ${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.cpp)
 add_library(imgui STATIC ${IMGUI_GLOB})
-target_include_directories(imgui PUBLIC ${IMGUI_PATH})
+target_include_directories(imgui PRIVATE ${IMGUI_PATH})
 target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(imgui PRIVATE glfw)
 target_compile_options(imgui PRIVATE -fPIC)
-target_link_libraries(Deimos PRIVATE imgui)
+target_link_libraries(Deimos PUBLIC imgui)
 
 # Add glm
 add_subdirectory(vendor/glm)
 target_link_libraries(Deimos PRIVATE glm)
+
+# Add dummy Cmake for imgui (to enable navigation through its functions)
+add_subdirectory(vendor/dummyCmake)
 
 target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers

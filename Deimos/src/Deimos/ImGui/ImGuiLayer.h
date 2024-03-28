@@ -13,10 +13,12 @@ namespace Deimos {
         ImGuiLayer();
         ~ImGuiLayer();
 
-        void onAttach();
-        void onDetach();
-        void onUpdate();
-        void onEvent(Event& event);
+        virtual void onAttach()override;
+        virtual void onDetach()override;
+        virtual void onImGuiRender() override;
+
+        void begin();
+        void end();
     private:
         bool onMouseButtonPressedEvent(MouseButtonPressedEvent& e);
         bool onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);

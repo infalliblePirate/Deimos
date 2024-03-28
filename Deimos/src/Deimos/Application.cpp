@@ -17,6 +17,8 @@ namespace Deimos {
 
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallback(BIND_EVENT_FN(onEvent)); // set onEvent as the callback fun
+        m_ImGuiLayer = new ImGuiLayer();
+        pushOverlay(m_ImGuiLayer);
     }
 
     Application::~Application() {
@@ -52,9 +54,15 @@ namespace Deimos {
             glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            //////////////////////////////
             for (Layer* layer : m_layerStack)
                 layer->onUpdate();
+
+            m_ImGuiLayer->begin();
+            for (Layer* layer : m_layerStack) {
+                layer->onImGuiRender();
+            }
+            m_ImGuiLayer->end();
+
             m_window->onUpdate();
         }
     }

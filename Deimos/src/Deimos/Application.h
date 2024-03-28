@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Deimos {
     class WindowCloseEvent;
@@ -29,6 +30,7 @@ namespace Deimos {
         bool m_running = true;
 
         LayerStack m_layerStack;
+        ImGuiLayer* m_ImGuiLayer;
 
         static Application* s_instance;
     };

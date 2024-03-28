@@ -5,7 +5,7 @@
 namespace Deimos {
 
     LayerStack::LayerStack() {
-        m_layerInsert = m_layers.begin(); // initializes iterator to point to the beginning of the m_layers
+
     }
 
     LayerStack::~LayerStack() {
@@ -14,8 +14,9 @@ namespace Deimos {
     }
 
     void LayerStack::pushLayer(Layer *layer) {
-        m_layerInsert = m_layers.emplace(m_layerInsert,
+       m_layers.emplace(m_layers.begin() + m_layerInsertIndex,
                                          layer); // m_layerInst is only updated for layers to enable layer insertion in the middle
+        m_layerInsertIndex++;
     }
 
     void LayerStack::pushOverlay(Layer *overlay) {
@@ -26,7 +27,7 @@ namespace Deimos {
         auto it = std::find(m_layers.begin(), m_layers.end(), layer); // range: [first, last)
         if (it != m_layers.end()) { // if the element was not found - returns last
             m_layers.erase(it);
-            --m_layerInsert;
+            --m_layerInsertIndex;
         }
     }
 
