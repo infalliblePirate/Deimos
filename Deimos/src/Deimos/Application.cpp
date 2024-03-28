@@ -27,12 +27,10 @@ namespace Deimos {
 
     void Application::pushLayer(Layer *layer) {
         m_layerStack.pushLayer(layer);
-        layer->onAttach();
     }
 
     void Application::pushOverlay(Layer *overlay) {
         m_layerStack.pushOverlay(overlay);
-        overlay->onAttach();
     }
 
     // whenever an even is occurred, it calls this function
