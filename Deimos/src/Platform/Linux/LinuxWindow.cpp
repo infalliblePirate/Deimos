@@ -8,6 +8,8 @@
 
 #include "glad/glad.h"
 
+#ifdef DM_PLATFORM_LINUX
+
 namespace Deimos {
     // static because should only be inited once no matter how many windows
     static bool s_GLFInitialized = false;
@@ -154,4 +156,6 @@ namespace Deimos {
         return m_data.vSync;
     }
 }
+
+#endif
 
