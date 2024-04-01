@@ -1,3 +1,6 @@
+#ifdef DM_PLATFORM_LINUX
+
+
 #include "dmpch.h"
 #include "LinuxWindow.h"
 
@@ -153,3 +156,4 @@ namespace Deimos {
     }
 }
 
+#endif

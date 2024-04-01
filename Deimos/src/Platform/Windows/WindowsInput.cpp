@@ -1,3 +1,5 @@
+#ifdef DM_PLATFORM_WINDOWS
+
 #include "WindowsInput.h"
 #include "GLFW/glfw3.h"
 #include "Deimos/Application.h"
@@ -35,3 +37,6 @@ namespace Deimos {
         return y;
     }
 }
+
+
+#endif

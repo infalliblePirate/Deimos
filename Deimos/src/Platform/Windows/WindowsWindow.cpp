@@ -1,3 +1,5 @@
+#ifdef DM_PLATFORM_WINDOWS
+
 #include "dmpch.h"
 #include "WindowsWindow.h"
 
@@ -153,3 +155,4 @@ namespace Deimos {
     }
 }
 
+#endif
