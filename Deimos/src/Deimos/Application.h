@@ -7,7 +7,6 @@
 #include "ImGui/ImGuiLayer.h"
 
 namespace Deimos {
-    class WindowCloseEvent;
 
     class DM_API Application {
     public:

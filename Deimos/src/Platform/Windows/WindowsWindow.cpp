@@ -6,7 +6,7 @@
 #include "Deimos/Events/MouseEvent.h"
 #include "spdlog/details/fmt_helper.h"
 
-#include <glad/glad.h>
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Deimos {
     // static because should only be inited once no matter how many windows
@@ -48,10 +48,8 @@ namespace Deimos {
 
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_window);
-
-        int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-        DM_CORE_ASSERT(status, "Failed to initialize Glad");
+        m_context = new OpenGLContext(m_window);
+        m_context->init();
 
         // m_window will store a pointer to user-defined data, which could be later accessed
         glfwSetWindowUserPointer(m_window, &m_data);
@@ -135,7 +133,7 @@ namespace Deimos {
 
     void WindowsWindow::onUpdate() {
         glfwPollEvents(); // processes window events
-        glfwSwapBuffers(m_window); // swaps front and back buffers, presents te rendered image
+        m_context->swapBuffers();
     }
 
     void WindowsWindow::shutdown() {
