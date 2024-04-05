@@ -42,6 +42,7 @@ namespace Deimos {
             // TODO glfw terminate on system shutdown
             int success = glfwInit();
             DM_CORE_ASSERT(success, "Could not initialize GLFW!");
+           // wl_subsurface_set_position(static_cast<wl_subsurface*>(m_window), 0, 0);
 
             glfwSetErrorCallback([](int error, const char *description) {
                 DM_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
