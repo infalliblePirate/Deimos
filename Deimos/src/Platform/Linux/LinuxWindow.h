@@ -2,6 +2,7 @@
 #define ENGINE_LINUXWINDOW_H
 
 #include "Deimos/Window.h"
+#include "Deimos/Renderer/GraphicsContext.h"
 #include "GLFW/glfw3.h"
 
 namespace Deimos {
@@ -30,6 +31,7 @@ namespace Deimos {
 
     private:
         GLFWwindow* m_window; // a base window, the whole WindowsWindow : Window is an overall window wtih extra custom data
+        GraphicsContext* m_context;
 
         struct WindowData {
             std::string title;

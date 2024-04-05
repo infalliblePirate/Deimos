@@ -7,7 +7,6 @@
 #include "ImGui/ImGuiLayer.h"
 
 namespace Deimos {
-    class WindowCloseEvent;
 
     class DM_API Application {
     public:
@@ -31,6 +30,8 @@ namespace Deimos {
 
         LayerStack m_layerStack;
         ImGuiLayer* m_ImGuiLayer;
+
+        unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
 
         static Application* s_instance;
     };
