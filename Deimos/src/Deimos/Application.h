@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/Shader.h"
 
 namespace Deimos {
 
@@ -31,6 +32,7 @@ namespace Deimos {
         LayerStack m_layerStack;
         ImGuiLayer* m_ImGuiLayer;
 
+        std::unique_ptr<Shader> m_shader;
         unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
 
         static Application* s_instance;

@@ -2,7 +2,9 @@
 add_library(_Deimos INTERFACE)
 
 # Group source files based on platform
-set(COMMON_SOURCES src/Deimos/)
+set(COMMON_SOURCES src/Deimos/
+        src/Renderer/Shader.cpp
+        src/Renderer/Shader.h)
 
 if (UNIX)
     message("The os is linux")
