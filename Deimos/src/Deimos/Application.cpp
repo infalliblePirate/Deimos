@@ -38,7 +38,7 @@ namespace Deimos {
 
         unsigned int indices[3] = {0, 1, 2};
 
-        m_indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(uint)));
+        m_indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u_int)));
 
         // input a position
         std::string vertexSrc = R"(
