@@ -24,17 +24,19 @@ namespace Deimos {
     }
 
     void LayerStack::popLayer(Layer *layer) {
-        auto it = std::find(m_layers.begin(), m_layers.end(), layer); // range: [first, last)
+        auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer); // range: [first, last)
         if (it != m_layers.end()) {
             // if the element was not found - returns last
+            layer->onDetach();
             m_layers.erase(it);
             --m_layerInsertIndex;
         }
     }
 
     void LayerStack::popOverlay(Layer *overlay) {
-        auto it = std::find(m_layers.begin(), m_layers.end(), overlay);
+        auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, overlay);
         if (it != m_layers.end())
+            overlay->onDetach();
             m_layers.erase(it);
     }
 }
