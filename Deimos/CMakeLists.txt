@@ -3,16 +3,12 @@ add_library(_Deimos INTERFACE)
 
 # Group source files based on platform
 set(COMMON_SOURCES src/Deimos/
-        src/Renderer/Shader.cpp
-        src/Renderer/Shader.h
-        src/Deimos/Renderer/Buffer.cpp
-        src/Deimos/Renderer/Buffer.h
-        src/Deimos/Renderer/Renderer.cpp
-        src/Deimos/Renderer/Renderer.h
-        src/Deimos/Renderer/Renderer.cpp
-        src/Deimos/Renderer/Renderer.h
-        src/Platform/OpenGL/OpenGLBuffer.cpp
-        src/Platform/OpenGL/OpenGLBuffer.h)
+        src/Deimos/Events
+        src/Deimos/ImGui
+        src/Deimos/Renderer
+        src/Renderer
+        src/Platform/OpenGL
+)
 
 if (UNIX)
     message("The os is linux")
