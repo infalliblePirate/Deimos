@@ -3,8 +3,7 @@
 
 #include "Events/ApplicationEvent.h"
 #include "spdlog/sinks/stdout_sinks.h"
-
-#include <glad/glad.h>
+#include "Deimos/Renderer/Renderer.h"
 
 #include <memory>
 
@@ -117,7 +116,7 @@ namespace Deimos {
             layout(location = 0) out vec4 color;
 
             void main() {
-                color = vec4(1.0, 1.0, 1.0, 1.0);
+                color = vec4(0.5, 0.2, 1.0, 1.0);
             }
         )";
 
@@ -152,16 +151,19 @@ namespace Deimos {
 
     void Application::run() {
         while (m_running) {
-            glClearColor(0.4, 0.2, 0.1, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::setClearColor({0.4, 0.2, 0.1, 1});
+            RenderCommand::clear();
 
-            m_blueShader->bind();
-            m_squareVA->bind();
-            glDrawElements(GL_TRIANGLES, m_squareVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::beginScene();
+            {
+                m_blueShader->bind();
+                Renderer::submit(m_squareVA); // submit geometry, mesh, etc
 
-            m_shader->bind();
-            m_vertexArray->bind();
-            glDrawElements(GL_TRIANGLES, m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+                m_shader->bind();
+                Renderer::submit(m_vertexArray);
+
+                Renderer::endScene();
+            }
 
             for (Layer *layer: m_layerStack)
                 layer->onUpdate();
