@@ -3,7 +3,6 @@
 
 #include "Events/ApplicationEvent.h"
 #include "spdlog/sinks/stdout_sinks.h"
-#include "Deimos/Renderer/Renderer.h"
 
 #include <memory>
 
@@ -12,7 +11,7 @@ namespace Deimos {
 
     Application *Application::s_instance = nullptr;
 
-    Application::Application() : m_camera(-1.6f, 1.6f, -0.9f, 0.9f){
+    Application::Application() {
         DM_CORE_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
@@ -20,111 +19,6 @@ namespace Deimos {
         m_window->setEventCallback(BIND_EVENT_FN(onEvent)); // set onEvent as the callback fun
         m_ImGuiLayer = new ImGuiLayer();
         pushOverlay(m_ImGuiLayer);
-
-        m_vertexArray.reset(VertexArray::create());
-
-        float vertices[3 * 7]{
-                -0.5f, -0.5f, 0.0f, 0.9f, 0.1f, 0.4f, 1.0f,
-                0.5f, -0.5f, 0.0f, 0.6f, 0.4f, 0.9f, 1.0f,
-                0.0f, 0.5f, 0.0f, 0.3f, 0.8f, 0.1f, 1.0f
-        };
-        std::shared_ptr<VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(VertexBuffer::create(vertices, sizeof(vertices)));
-
-        BufferLayout layout = {
-                {ShaderDataType::Float3, "a_position"},
-                {ShaderDataType::Float4, "a_color"}
-        };
-        vertexBuffer->setLayout(layout);
-        m_vertexArray->addVertexBuffer(vertexBuffer);
-
-        unsigned int indices[3] = {0, 1, 2};
-
-        std::shared_ptr<IndexBuffer> indexBuffer;
-        indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u_int)));
-        m_vertexArray->setIndexBuffer(indexBuffer);
-
-        m_squareVA.reset(VertexArray::create());
-
-        float squareVertices[3 * 4] = {
-                -0.75f, -0.75f, 0.0f,
-                0.75f, -0.75f, 0.0f,
-                0.75f, 0.75f, 0.0f,
-                -0.75f, 0.75f, 0.0f
-        };
-
-        std::shared_ptr<VertexBuffer> squareVB;
-        squareVB.reset(VertexBuffer::create(squareVertices, sizeof(squareVertices)));
-        squareVB->setLayout({
-                                    {ShaderDataType::Float3, "a_position"}
-                            });
-        m_squareVA->addVertexBuffer(squareVB);
-
-        unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
-        std::shared_ptr<IndexBuffer> squareIB;
-        squareIB.reset(IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
-        m_squareVA->setIndexBuffer(squareIB);
-
-        // input a position
-        std::string vertexSrc = R"(
-            #version 330 core
-
-            layout(location = 0) in vec3 a_position;
-            layout(location = 1) in vec4 a_color;
-
-            uniform mat4 u_viewProjection;
-
-            out vec3 v_position; // varying variable
-            out vec4 v_color;
-
-            void main() {
-                v_position = a_position;
-                v_color = a_color;
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
-            }
-        )";
-
-        // output a color
-        std::string fragmentSrc = R"(
-            #version 330 core
-
-            layout(location = 0) out vec4 color;
-
-            in vec3 v_position;
-            in vec4 v_color;
-
-            void main() {
-                color = vec4(v_position + 0.5, 1.0);
-                color = v_color;
-            }
-        )";
-
-        m_shader.reset(new Shader(vertexSrc, fragmentSrc));
-
-        std::string blueShaderVertexSrc = R"(
-            #version 330 core
-
-            layout(location = 0) in vec3 a_position;
-
-            uniform mat4 u_viewProjection;
-
-            void main() {
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
-            }
-        )";
-
-        // output a color
-        std::string blueShaderFragmentSrc = R"(
-            #version 330 core
-
-            layout(location = 0) out vec4 color;
-
-            void main() {
-                color = vec4(0.5, 0.2, 1.0, 1.0);
-            }
-        )";
-
-        m_blueShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
     Application::~Application() {
@@ -156,19 +50,6 @@ namespace Deimos {
     void Application::run() {
         static int i = 0;
         while (m_running) {
-            RenderCommand::setClearColor({0.4, 0.2, 0.1, 1});
-            RenderCommand::clear();
-
-            m_camera.setRotation(i++);
-
-            Renderer::beginScene(m_camera);
-            {
-                Renderer::submit(m_blueShader, m_squareVA); // submit geometry, mesh, etc
-                Renderer::submit(m_shader, m_vertexArray);
-
-                Renderer::endScene();
-            }
-
             for (Layer *layer: m_layerStack)
                 layer->onUpdate();
 

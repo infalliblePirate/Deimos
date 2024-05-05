@@ -1,7 +1,7 @@
 #ifndef ENGINE_RENDERERAPI_H
 #define ENGINE_RENDERERAPI_H
 
-#include <glm/glm.hpp>
+#include <glm/glm/glm.hpp>
 #include "VertexArray.h"
 
 namespace Deimos {

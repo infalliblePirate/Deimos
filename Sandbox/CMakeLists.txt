@@ -7,10 +7,6 @@ endif ()
 # Define the executable target
 add_executable(Sandbox src/SandboxApp.cpp)
 
-# Enable Unity Builds
-file(GLOB_RECURSE SANDBOX_SOURCE_FILES "src/*.cpp")
-target_sources(Sandbox PRIVATE ${SANDBOX_SOURCE_FILES})
-
 # Set include directories for the executable
 target_include_directories(Sandbox PRIVATE src)
 

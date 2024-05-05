@@ -6,7 +6,6 @@ set(COMMON_SOURCES src/Deimos/
         src/Deimos/Events
         src/Deimos/ImGui
         src/Deimos/Renderer
-        src/Renderer
         src/Platform/OpenGL
 )
 

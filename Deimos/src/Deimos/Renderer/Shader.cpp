@@ -1,8 +1,8 @@
 #include "dmpch.h"
 #include "Shader.h"
-#include <glad/glad.h>
+#include "GLAD/include/glad/glad.h"
 
-#include <glm/glm/gtc/type_ptr.hpp>
+#include "glm/glm/gtc/type_ptr.hpp"
 
 namespace Deimos {
 

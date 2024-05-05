@@ -2,7 +2,7 @@
 #define ENGINE_OPENGLBUFFER_H
 
 #include "Deimos/Renderer/Buffer.h"
-#include "Renderer/Shader.h"
+#include "Deimos/Renderer/Shader.h"
 
 namespace Deimos {
 

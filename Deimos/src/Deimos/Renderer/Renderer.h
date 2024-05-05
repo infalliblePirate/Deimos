@@ -3,7 +3,7 @@
 
 #include "RenderCommand.h"
 #include "OrthographicCamera.h"
-#include "Renderer/Shader.h"
+#include "Shader.h"
 
 namespace Deimos {
 
