@@ -2,6 +2,8 @@
 #include "Shader.h"
 #include <glad/glad.h>
 
+#include <glm/glm/gtc/type_ptr.hpp>
+
 namespace Deimos {
 
     Shader::Shader(const std::string &vertexSrc, const std::string &fragmentSrc) {
@@ -108,6 +110,11 @@ namespace Deimos {
 
     void Shader::unbind() const {
         glUseProgram(0);
+    }
+
+    void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix) {
+        GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+        glad_glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
 }

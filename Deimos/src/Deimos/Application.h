@@ -8,6 +8,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Buffer.h"
 #include "Deimos/Renderer/VertexArray.h"
+#include "Deimos/Renderer/OrthographicCamera.h"
 
 namespace Deimos {
 
@@ -40,6 +41,8 @@ namespace Deimos {
         std::shared_ptr<VertexArray> m_vertexArray;
         std::shared_ptr<VertexArray> m_squareVA;
 
+        OrthographicCamera m_camera;
+    private:
         static Application* s_instance;
     };
 
