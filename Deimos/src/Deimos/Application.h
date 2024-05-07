@@ -9,6 +9,7 @@
 #include "Renderer/Buffer.h"
 #include "Deimos/Renderer/VertexArray.h"
 #include "Deimos/Renderer/OrthographicCamera.h"
+#include "Deimos/Core/Timestep.h"
 
 namespace Deimos {
 
@@ -34,6 +35,8 @@ namespace Deimos {
 
         LayerStack m_layerStack;
         ImGuiLayer* m_ImGuiLayer;
+
+        Timestep m_lastFrameTime = 0.f;
     private:
         static Application* s_instance;
     };

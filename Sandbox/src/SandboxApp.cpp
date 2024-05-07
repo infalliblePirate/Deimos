@@ -113,23 +113,24 @@ public:
         m_blueShader.reset(new Deimos::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    void onUpdate() override {
+    void onUpdate(Deimos::Timestep timestep) override {
+        std::cout << timestep<< std::endl;
         if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
-            m_cameraPosition.x -= m_cameraMoveSpeed;
+            m_cameraPosition.x -= m_cameraMoveSpeed * 0.05;
         } else if (Deimos::Input::isKeyPressed(DM_KEY_RIGHT)) {
-            m_cameraPosition.x += m_cameraMoveSpeed;
+            m_cameraPosition.x += m_cameraMoveSpeed * 0.05;
         }
 
         if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
-            m_cameraPosition.y += m_cameraMoveSpeed;
+            m_cameraPosition.y += m_cameraMoveSpeed * 0.05f;
         } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
-            m_cameraPosition.y -= m_cameraMoveSpeed;
+            m_cameraPosition.y -= m_cameraMoveSpeed * 0.05f;
         }
 
         if (Deimos::Input::isKeyPressed(DM_KEY_A)) {
-            m_cameraRotation += m_cameraRotationSpeed;
+            m_cameraRotation += m_cameraRotationSpeed * timestep.getSeconds();
         } else if (Deimos::Input::isKeyPressed(DM_KEY_D)) {
-            m_cameraRotation -= m_cameraRotationSpeed;
+            m_cameraRotation -= m_cameraRotationSpeed * timestep.getSeconds();
         }
 
         Deimos::RenderCommand::setClearColor({0.4, 0.2, 0.1, 1});
@@ -164,9 +165,9 @@ private:
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition;
 
-    float m_cameraMoveSpeed = 0.1f;
+    float m_cameraMoveSpeed = 3.f;
     float m_cameraRotation = 0.f;
-    float m_cameraRotationSpeed = 2.f;
+    float m_cameraRotationSpeed = 180.f;
 };
 
 class Sandbox : public Deimos::Application {

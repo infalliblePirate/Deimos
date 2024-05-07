@@ -4,6 +4,7 @@
 #include "Events/ApplicationEvent.h"
 #include "spdlog/sinks/stdout_sinks.h"
 
+#include "GLFW/glfw3.h"
 #include <memory>
 
 namespace Deimos {
@@ -17,6 +18,7 @@ namespace Deimos {
 
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallback(BIND_EVENT_FN(onEvent)); // set onEvent as the callback fun
+        //m_window->setVSync(false);
         m_ImGuiLayer = new ImGuiLayer();
         pushOverlay(m_ImGuiLayer);
     }
@@ -48,10 +50,13 @@ namespace Deimos {
 
 
     void Application::run() {
-        static int i = 0;
+        float time = (float)glfwGetTime();
+        Timestep timestep = time - m_lastFrameTime;
+         m_lastFrameTime = time;
+
         while (m_running) {
             for (Layer *layer: m_layerStack)
-                layer->onUpdate();
+                layer->onUpdate(timestep);
 
             m_ImGuiLayer->begin();
             for (Layer *layer: m_layerStack) {

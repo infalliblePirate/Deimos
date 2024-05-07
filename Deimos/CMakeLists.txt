@@ -2,11 +2,25 @@
 add_library(_Deimos INTERFACE)
 
 # Group source files based on platform
-set(COMMON_SOURCES src/Deimos/
-        src/Deimos/Events
-        src/Deimos/ImGui
-        src/Deimos/Renderer
-        src/Platform/OpenGL
+set(COMMON_SOURCES
+        src/Deimos/Application.cpp
+        src/Deimos/EntryPoint.h
+        src/Deimos/Layer.cpp
+        src/Deimos/LayerStack.cpp
+        src/Deimos/Log.cpp
+        src/Deimos/ImGui/ImGuiBuild.cpp
+        src/Deimos/ImGui/ImGuiLayer.cpp
+        src/Deimos/Renderer/OrthographicCamera.cpp
+        src/Deimos/Renderer/Renderer.cpp
+        src/Deimos/Renderer/RenderCommand.cpp
+        src/Deimos/Renderer/RendererAPI.cpp
+        src/Deimos/Renderer/Shader.cpp
+        src/Deimos/Renderer/Buffer.cpp
+        src/Deimos/Renderer/VertexArray.cpp
+        src/Platform/OpenGL/OpenGLBuffer.cpp
+        src/Platform/OpenGL/OpenGLContext.cpp
+        src/Platform/OpenGL/OpenGLRendererAPI.cpp
+        src/Platform/OpenGL/OpenGLVertexArray.cpp
 )
 
 if (UNIX)
@@ -27,16 +41,7 @@ else()
     message(FATAL_ERROR "No platform specified!")
 endif ()
 
-add_library(Deimos ${COMMON_SOURCES} ${PLATFORM_SOURCES})
-
-target_link_libraries(Deimos PRIVATE _Deimos)
-
-
-find_program(CCACHE_FOUND ccache)
-if (CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif ()
+add_library(Deimos SHARED ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
 # Set default build type to Debug
 if (NOT CMAKE_BUILD_TYPE)
@@ -60,10 +65,6 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring for Release build")
 endif ()
-
-# Enable Unity Builds
-file(GLOB_RECURSE ENGINE_SOURCE_FILES "src/*.cpp")
-target_sources(Deimos PRIVATE ${ENGINE_SOURCE_FILES})
 
 # Enable precompiled header for source files
 target_precompile_headers(Deimos PRIVATE "src/dmpch.h")

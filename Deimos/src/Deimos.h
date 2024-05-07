@@ -9,6 +9,8 @@
 #include "Deimos/KeyCodes.h"
 #include "Deimos/MouseButtonCodes.h"
 
+#include "Deimos/Core/Timestep.h"
+
 #include "Deimos/Renderer/Renderer.h"
 #include "Deimos/Renderer/RenderCommand.h"
 

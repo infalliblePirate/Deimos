@@ -3,6 +3,7 @@
 
 #include "Core.h"
 #include "Events/Event.h"
+#include "Deimos/Core/Timestep.h"
 
 namespace Deimos {
     class DM_API Layer {
@@ -12,7 +13,7 @@ namespace Deimos {
 
         virtual void onAttach() {}; // add to LayerStack
         virtual void onDetach() {}; // remove from the LayerStack
-        virtual void onUpdate() {};
+        virtual void onUpdate(Deimos::Timestep timestep) {};
         virtual void onImGuiRender() {};
         virtual void onEvent(Event& event) {};
 

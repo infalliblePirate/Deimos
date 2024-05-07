@@ -10,7 +10,7 @@ namespace Deimos {
 
     void OrthographicCamera::recalculateViewMatrix() {
         glm::mat4 transform = glm::translate(glm::mat4(1.f), m_position);
-        transform = glm::rotate(transform, glm::radians(m_rotation), glm::vec3(1,1,1));
+        transform = glm::rotate(transform, glm::radians(m_rotation), glm::vec3(0,0,1));
 
         m_viewMatrix = glm::inverse(transform);
         m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
