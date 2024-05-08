@@ -116,15 +116,15 @@ public:
     void onUpdate(Deimos::Timestep timestep) override {
         std::cout << timestep<< std::endl;
         if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
-            m_cameraPosition.x -= m_cameraMoveSpeed * 0.05;
+            m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
         } else if (Deimos::Input::isKeyPressed(DM_KEY_RIGHT)) {
-            m_cameraPosition.x += m_cameraMoveSpeed * 0.05;
+            m_cameraPosition.x += m_cameraMoveSpeed * timestep;
         }
 
         if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
-            m_cameraPosition.y += m_cameraMoveSpeed * 0.05f;
+            m_cameraPosition.y += m_cameraMoveSpeed * timestep;
         } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
-            m_cameraPosition.y -= m_cameraMoveSpeed * 0.05f;
+            m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
         }
 
         if (Deimos::Input::isKeyPressed(DM_KEY_A)) {
@@ -163,11 +163,11 @@ private:
     std::shared_ptr<Deimos::VertexArray> m_squareVA;
 
     Deimos::OrthographicCamera m_camera;
-    glm::vec3 m_cameraPosition;
+    glm::vec3 m_cameraPosition{0.f};
 
-    float m_cameraMoveSpeed = 3.f;
+    float m_cameraMoveSpeed = 00.3f;
     float m_cameraRotation = 0.f;
-    float m_cameraRotationSpeed = 180.f;
+    float m_cameraRotationSpeed = 10.f;
 };
 
 class Sandbox : public Deimos::Application {

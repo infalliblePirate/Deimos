@@ -41,7 +41,7 @@ else()
     message(FATAL_ERROR "No platform specified!")
 endif ()
 
-add_library(Deimos SHARED ${COMMON_SOURCES} ${PLATFORM_SOURCES})
+add_library(Deimos STATIC ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
 # Set default build type to Debug
 if (NOT CMAKE_BUILD_TYPE)

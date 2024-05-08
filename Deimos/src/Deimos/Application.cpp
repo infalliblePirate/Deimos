@@ -5,6 +5,7 @@
 #include "spdlog/sinks/stdout_sinks.h"
 
 #include "GLFW/glfw3.h"
+#include "ImGui/imgui.h"
 #include <memory>
 
 namespace Deimos {
@@ -50,13 +51,14 @@ namespace Deimos {
 
 
     void Application::run() {
-        float time = (float)glfwGetTime();
-        Timestep timestep = time - m_lastFrameTime;
-         m_lastFrameTime = time;
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - m_lastFrameTime;
+        m_lastFrameTime = currentTime;
 
         while (m_running) {
             for (Layer *layer: m_layerStack)
-                layer->onUpdate(timestep);
+                layer->onUpdate(deltaTime);
+
 
             m_ImGuiLayer->begin();
             for (Layer *layer: m_layerStack) {
@@ -64,7 +66,9 @@ namespace Deimos {
             }
             m_ImGuiLayer->end();
 
+
             m_window->onUpdate();
+
         }
     }
 

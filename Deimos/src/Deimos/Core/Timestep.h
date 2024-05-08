@@ -4,7 +4,7 @@
 namespace Deimos {
     class Timestep {
     public:
-        Timestep(float time = 0) : m_time(time) {
+        Timestep(float time = 0.f) : m_time(time) {
         }
 
         float getSeconds() const { return m_time; }
