@@ -2,6 +2,7 @@
 
 #include "iostream"
 #include "Deimos.h"
+#include "glm/glm/ext/matrix_transform.hpp"
 
 class ExampleLayer : public Deimos::Layer {
 public:
@@ -33,10 +34,10 @@ public:
         m_squareVA.reset(Deimos::VertexArray::create());
 
         float squareVertices[3 * 4] = {
-                -0.75f, -0.75f, 0.0f,
-                0.75f, -0.75f, 0.0f,
-                0.75f, 0.75f, 0.0f,
-                -0.75f, 0.75f, 0.0f
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+                0.5f, 0.5f, 0.0f,
+                -0.5f, 0.5f, 0.0f
         };
 
         std::shared_ptr<Deimos::VertexBuffer> squareVB;
@@ -59,6 +60,7 @@ public:
             layout(location = 1) in vec4 a_color;
 
             uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
 
             out vec3 v_position; // varying variable
             out vec4 v_color;
@@ -66,7 +68,7 @@ public:
             void main() {
                 v_position = a_position;
                 v_color = a_color;
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
             }
         )";
 
@@ -93,9 +95,10 @@ public:
             layout(location = 0) in vec3 a_position;
 
             uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
 
             void main() {
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
             }
         )";
 
@@ -114,37 +117,44 @@ public:
     }
 
     void onUpdate(Deimos::Timestep timestep) override {
-        std::cout << timestep<< std::endl;
-        if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
-            m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
-        } else if (Deimos::Input::isKeyPressed(DM_KEY_RIGHT)) {
-            m_cameraPosition.x += m_cameraMoveSpeed * timestep;
-        }
+        std::cout << timestep << std::endl;
+        {
+            if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
+                m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
+            } else if (Deimos::Input::isKeyPressed(DM_KEY_RIGHT)) {
+                m_cameraPosition.x += m_cameraMoveSpeed * timestep;
+            }
 
-        if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
-            m_cameraPosition.y += m_cameraMoveSpeed * timestep;
-        } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
-            m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
-        }
+            if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
+                m_cameraPosition.y += m_cameraMoveSpeed * timestep;
+            } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
+                m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
+            }
 
-        if (Deimos::Input::isKeyPressed(DM_KEY_A)) {
-            m_cameraRotation += m_cameraRotationSpeed * timestep.getSeconds();
-        } else if (Deimos::Input::isKeyPressed(DM_KEY_D)) {
-            m_cameraRotation -= m_cameraRotationSpeed * timestep.getSeconds();
+            if (Deimos::Input::isKeyPressed(DM_KEY_A)) {
+                m_cameraRotation += m_cameraRotationSpeed * timestep;
+            } else if (Deimos::Input::isKeyPressed(DM_KEY_D)) {
+                m_cameraRotation -= m_cameraRotationSpeed * timestep;
+            }
         }
 
         Deimos::RenderCommand::setClearColor({0.4, 0.2, 0.1, 1});
         Deimos::RenderCommand::clear();
+
         m_camera.setPosition(m_cameraPosition);
         m_camera.setRotation(m_cameraRotation);
 
         Deimos::Renderer::beginScene(m_camera);
-        {
-            Deimos::Renderer::submit(m_blueShader, m_squareVA); // submit geometry, mesh, etc
-            Deimos::Renderer::submit(m_shader, m_vertexArray);
-
-            Deimos::Renderer::endScene();
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        for (int y = 0; y < 20; y++){
+            for (int x = 0; x < 20; x++){
+                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+                Deimos::Renderer::submit(m_blueShader, m_squareVA, transform);
+            }
         }
+        //Deimos::Renderer::submit(m_shader, m_vertexArray);
+        Deimos::Renderer::endScene();
     }
 
     virtual void onImGuiRender() override {
@@ -165,7 +175,7 @@ private:
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition{0.f};
 
-    float m_cameraMoveSpeed = 00.3f;
+    float m_cameraMoveSpeed = 0.3f;
     float m_cameraRotation = 0.f;
     float m_cameraRotationSpeed = 10.f;
 };

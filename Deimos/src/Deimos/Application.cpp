@@ -5,7 +5,6 @@
 #include "spdlog/sinks/stdout_sinks.h"
 
 #include "GLFW/glfw3.h"
-#include "ImGui/imgui.h"
 #include <memory>
 
 namespace Deimos {
