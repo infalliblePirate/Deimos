@@ -15,6 +15,7 @@ namespace Deimos {
         void unbind() const;
 
         void uploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+        void uploadFloat4(const std::string& name, const glm::vec4& value);
     private:
         uint32_t m_rendererID;
     };

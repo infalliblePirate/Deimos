@@ -117,4 +117,9 @@ namespace Deimos {
         glad_glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
+    void Shader::uploadFloat4(const std::string &name, const glm::vec4& value) {
+        GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+        glUniform4f(location, value.x, value.y, value.z, value.w);
+    }
+
 }

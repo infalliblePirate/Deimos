@@ -81,8 +81,10 @@ public:
             in vec3 v_position;
             in vec4 v_color;
 
+            uniform vec4 u_color;
+
             void main() {
-                color = vec4(v_position + 0.5, 1.0);
+                color = u_color;
                 color = v_color;
             }
         )";
@@ -107,9 +109,10 @@ public:
             #version 330 core
 
             layout(location = 0) out vec4 color;
+            uniform vec4 u_color;
 
             void main() {
-                color = vec4(0.5, 0.2, 1.0, 1.0);
+                color = u_color;
             }
         )";
 
@@ -145,13 +148,26 @@ public:
         m_camera.setRotation(m_cameraRotation);
 
         Deimos::Renderer::beginScene(m_camera);
-        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        for (int y = 0; y < 20; y++){
-            for (int x = 0; x < 20; x++){
-                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.07f));
+
+        static glm::vec4 black = {0, 0, 0, 1};
+        static glm::vec4 white = {1, 1, 1, 1};
+
+        glm::vec4 currentColor;
+        int i = 0;
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (i % 2 == 0) {
+                    currentColor = black;
+                } else {
+                    currentColor = white;
+                }
+                glm::vec3 pos(x * 0.073f, y * 0.073f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                Deimos::Renderer::submit(m_blueShader, m_squareVA, transform);
+                Deimos::Renderer::submit(m_blueShader, m_squareVA, transform, currentColor);
+                i++;
             }
+            i++;
         }
         //Deimos::Renderer::submit(m_shader, m_vertexArray);
         Deimos::Renderer::endScene();
@@ -165,6 +181,32 @@ public:
 
     }
 
+    std::vector<std::vector<int>> readTextFile(const std::string &filename, int rows, int cols) {
+        std::ifstream file(filename);
+        if (!file) {
+            std::cerr << "Unable to open file " << filename << std::endl;
+            return {};
+        }
+        std::vector<std::vector<int>> matrix;
+
+        if (file.is_open()) {
+            matrix.resize(rows, std::vector<int>(cols));
+
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    char bit;
+                    file >> bit;
+                    matrix[i][j] = bit - '0';
+                }
+            }
+
+            file.close();
+        }
+
+        return matrix;
+    }
+
+
 private:
     std::shared_ptr<Deimos::Shader> m_shader;
     std::shared_ptr<Deimos::Shader> m_blueShader;
@@ -175,7 +217,7 @@ private:
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition{0.f};
 
-    float m_cameraMoveSpeed = 0.3f;
+    float m_cameraMoveSpeed = 0.2f;
     float m_cameraRotation = 0.f;
     float m_cameraRotationSpeed = 10.f;
 };

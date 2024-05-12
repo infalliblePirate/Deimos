@@ -11,7 +11,8 @@ namespace Deimos {
     public:
         static void beginScene(OrthographicCamera camera);
         static void endScene();
-        static void submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4 transform = glm::mat4(1));
+        static void submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray>& vertexArray,
+                           const glm::mat4& transform, const glm::vec4& color);
 
         inline static RendererAPI::API getAPI () { return RendererAPI::getAPI(); }
     private:
