@@ -1,6 +1,8 @@
 #ifndef ENGINE_CORE_H
 #define ENGINE_CORE_H
 
+#include <memory>
+
 #ifdef DM_PLATFORM_WINDOWS
 #if DM_DYNAMIC_LINK
     #ifdef DM_BUILD_DLL
@@ -39,6 +41,13 @@
 
 
 #define BIT(x) (1 << x)
-#define DM_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+namespace Deimos {
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+}
 
 #endif //ENGINE_CORE_H

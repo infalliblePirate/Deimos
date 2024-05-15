@@ -17,7 +17,7 @@ public:
                 0.5f, -0.5f, 0.0f, 0.6f, 0.4f, 0.9f, 1.0f,
                 0.0f, 0.5f, 0.0f, 0.3f, 0.8f, 0.1f, 1.0f
         };
-        std::shared_ptr<Deimos::VertexBuffer> vertexBuffer;
+        Deimos::Ref<Deimos::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(Deimos::VertexBuffer::create(vertices, sizeof(vertices)));
 
         Deimos::BufferLayout layout = {
@@ -29,7 +29,7 @@ public:
 
         unsigned int indices[3] = {0, 1, 2};
 
-        std::shared_ptr<Deimos::IndexBuffer> indexBuffer;
+        Deimos::Ref<Deimos::IndexBuffer> indexBuffer;
         indexBuffer.reset(Deimos::IndexBuffer::create(indices, sizeof(indices) / sizeof(u_int)));
         m_vertexArray->setIndexBuffer(indexBuffer);
 
@@ -42,7 +42,7 @@ public:
                 -0.5f, 0.5f, 0.0f
         };
 
-        std::shared_ptr<Deimos::VertexBuffer> squareVB;
+        Deimos::Ref<Deimos::VertexBuffer> squareVB;
         squareVB.reset(Deimos::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
         squareVB->setLayout({
                                     {Deimos::ShaderDataType::Float3, "a_position"}
@@ -50,7 +50,7 @@ public:
         m_squareVA->addVertexBuffer(squareVB);
 
         unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
-        std::shared_ptr<Deimos::IndexBuffer> squareIB;
+        Deimos::Ref<Deimos::IndexBuffer> squareIB;
         squareIB.reset(Deimos::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
         m_squareVA->setIndexBuffer(squareIB);
 
@@ -178,11 +178,11 @@ public:
     }
 
 private:
-    std::shared_ptr<Deimos::Shader> m_shader;
-    std::shared_ptr<Deimos::Shader> m_plainColorShader;
+    Deimos::Ref<Deimos::Shader> m_shader;
+    Deimos::Ref<Deimos::Shader> m_plainColorShader;
 
-    std::shared_ptr<Deimos::VertexArray> m_vertexArray;
-    std::shared_ptr<Deimos::VertexArray> m_squareVA;
+    Deimos::Ref<Deimos::VertexArray> m_vertexArray;
+    Deimos::Ref<Deimos::VertexArray> m_squareVA;
 
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition{0.f};
