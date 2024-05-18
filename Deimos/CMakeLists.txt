@@ -23,8 +23,21 @@ set(COMMON_SOURCES
         src/Platform/OpenGL/OpenGLVertexArray.cpp
         src/Platform/OpenGL/OpenGLShader.cpp
         src/Platform/OpenGL/OpenGLShader.cpp
+        vendor/stb_image/stb_image.cpp
+        src/Deimos/Renderer/Texture.cpp
+        src/Platform/OpenGL/OpenGLTexture2D.cpp
+        src/Platform/OpenGL/OpenGLTexture2D.h
 )
 
+# Add compile options for SSE support
+add_compile_options(-msse2 -msse3) # Example flags for SSE2 and SSE3 support
+
+# Apply compile options to stb_image.cpp
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_BUILD_TYPE MATCHES "Debug")
+    set_source_files_properties(vendor/stb_image/stb_image.cpp PROPERTIES COMPILE_OPTIONS "-O2")
+endif()
+
+# Platform-specific source files
 if (UNIX)
     message("The os is linux")
     list(APPEND PLATFORM_SOURCES
@@ -43,6 +56,7 @@ else()
     message(FATAL_ERROR "No platform specified!")
 endif ()
 
+# Add Deimos library
 add_library(Deimos STATIC ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
 # Set default build type to Debug
@@ -80,7 +94,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-# Add the root directory of the GLFW
+# Add GLFW
 add_subdirectory(vendor/GLFW)
 
 # Add glfw library
@@ -140,7 +154,7 @@ add_subdirectory(vendor/dummyCmake)
 target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
-# Set output dirs
+# Set output directories
 set_target_properties(Deimos PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"

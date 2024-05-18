@@ -2,7 +2,7 @@
 #define ENGINE_OPENGLSHADER_H
 
 #include "Deimos/Renderer/Shader.h"
-#include <glm/glm.hpp>
+#include <glm/glm/glm.hpp>
 
 namespace Deimos {
     class OpenGLShader : public Shader {

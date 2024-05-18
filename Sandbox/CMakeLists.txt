@@ -24,3 +24,7 @@ target_compile_definitions(Sandbox PRIVATE ${DM_PLATFORM})
 
 # Enable c++ exception handling
 target_compile_options(Sandbox PRIVATE -fexceptions)
+
+set(PROJECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(ASSETS_DIR ${PROJECT_BASE_DIR}/assets)
+add_definitions(-DASSETS_DIR="${ASSETS_DIR}")

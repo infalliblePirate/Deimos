@@ -1,10 +1,10 @@
-#include <Deimos/ImGui/ImGuiLayer.h>
-
 #include "iostream"
 #include "Deimos.h"
-#include "glm/glm/ext/matrix_transform.hpp"
 
 #include "imgui/imgui.h"
+#include "Platform/OpenGL/OpenGLShader.h"
+
+#include <glm/glm/gtc/matrix_transform.hpp>
 
 class ExampleLayer : public Deimos::Layer {
 public:
@@ -35,17 +35,18 @@ public:
 
         m_squareVA.reset(Deimos::VertexArray::create());
 
-        float squareVertices[3 * 4] = {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
-                -0.5f, 0.5f, 0.0f
+        float squareVertices[5 * 4] = {
+                -0.5f, -0.5f, 0.0f, 0.f, 0.f,
+                0.5f, -0.5f, 0.0f, 1.f, 0.f,
+                0.5f, 0.5f, 0.0f, 1.f, 1.f,
+                -0.5f, 0.5f, 0.0f, 0.f, 1.f
         };
 
         Deimos::Ref<Deimos::VertexBuffer> squareVB;
         squareVB.reset(Deimos::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
         squareVB->setLayout({
-                                    {Deimos::ShaderDataType::Float3, "a_position"}
+                                    {Deimos::ShaderDataType::Float3, "a_position"},
+                                    {Deimos::ShaderDataType::Float2, "a_texCoord"}
                             });
         m_squareVA->addVertexBuffer(squareVB);
 
@@ -106,19 +107,55 @@ public:
             }
         )";
 
-        // output a color
         std::string plainColorFragmentSrc = R"(
             #version 330 core
 
             layout(location = 0) out vec4 color;
+
+            in vec3 v_position;
+
             uniform vec4 u_color;
 
             void main() {
                 color = u_color;
             }
         )";
-
         m_plainColorShader.reset(Deimos::Shader::create(plainColorVertexSrc, plainColorFragmentSrc));
+
+        std::string textureVertexSrc = R"(
+            #version 330 core
+
+            layout(location = 0) in vec3 a_position;
+            layout(location = 1) in vec2 a_texCoord;
+
+            uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
+
+            out vec2 v_texCoord;
+
+            void main() {
+                v_texCoord = a_texCoord;
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
+            }
+        )";
+
+        std::string textureFragmentSrc = R"(
+            #version 330 core
+
+            layout(location = 0) out vec4 color;
+
+            in vec2 v_texCoord;
+
+            uniform sampler2D u_texture;
+            uniform vec4 u_color;
+
+            void main() {
+                color = texture(u_texture, v_texCoord) * u_color;
+            }
+        )";
+
+        m_TextureShader.reset(Deimos::Shader::create(textureVertexSrc, textureFragmentSrc));
+        m_texture = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/go.jpeg");
     }
 
     void onUpdate(Deimos::Timestep timestep) override {
@@ -151,26 +188,24 @@ public:
         Deimos::Renderer::beginScene(m_camera);
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.07f));
 
-        static glm::vec4 black = {0, 0, 0, 1};
-        static glm::vec4 white = {1, 1, 1, 1};
+        //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->bind();
+        //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->uploadFloat4("u_color", m_color);
 
-        int i = 0;
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 8; x++) {
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->bind();
 
-                glm::vec3 pos(x * 0.08f, y * 0.08f, 0.0f);
-                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                Deimos::Renderer::submit(m_plainColorShader, m_squareVA, transform, color);
-                i++;
-            }
-            i++;
-        }
-        //Deimos::Renderer::submit(m_shader, m_vertexArray);
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadInt("u_texture", 0);
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadFloat4("u_color", m_color);
+
+        m_texture->bind();
+        Deimos::Renderer::submit(m_TextureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
         Deimos::Renderer::endScene();
     }
 
     virtual void onImGuiRender() override {
-        ImGui::ColorEdit4("color picker", (float*)&color);
+        ImGui::Begin("Settings");
+        ImGui::ColorEdit4("Square color", (float *) &m_color);
+        ImGui::End();
     }
 
     void onEvent(Deimos::Event &event) override {
@@ -180,9 +215,12 @@ public:
 private:
     Deimos::Ref<Deimos::Shader> m_shader;
     Deimos::Ref<Deimos::Shader> m_plainColorShader;
+    Deimos::Ref<Deimos::Shader> m_TextureShader;
 
     Deimos::Ref<Deimos::VertexArray> m_vertexArray;
     Deimos::Ref<Deimos::VertexArray> m_squareVA;
+
+    Deimos::Ref<Deimos::Texture2D> m_texture;
 
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition{0.f};
@@ -191,7 +229,7 @@ private:
     float m_cameraRotation = 0.f;
     float m_cameraRotationSpeed = 10.f;
 
-    glm::vec4 color{1.f, 0.f, 1.0f, 1.0f};
+    glm::vec4 m_color{1.f, 1.f, 1.0f, 1.0f};
 };
 
 class Sandbox : public Deimos::Application {

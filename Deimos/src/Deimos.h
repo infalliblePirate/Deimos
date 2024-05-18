@@ -18,6 +18,8 @@
 #include "Deimos/Renderer/Shader.h"
 #include "Deimos/Renderer/VertexArray.h"
 
+#include "Deimos/Renderer/Texture.h"
+
 #include "Deimos/EntryPoint.h"
 
 #endif //ENGINE_DEIMOS_H
