@@ -20,6 +20,7 @@ namespace Deimos {
         virtual const Ref<IndexBuffer>& getIndexBuffer() const override;
     private:
         uint32_t m_rendererID;
+        uint32_t m_VertexBufferIndex = 0;
         std::vector<Ref<VertexBuffer>> m_vertexBuffers;
         Ref<IndexBuffer> m_indexBuffer;
     };

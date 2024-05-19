@@ -25,7 +25,7 @@ namespace Deimos {
 
     void LayerStack::popLayer(Layer *layer) {
         auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer); // range: [first, last)
-        if (it != m_layers.end()) {
+        if (it != m_layers.begin() + m_layerInsertIndex) {
             // if the element was not found - returns last
             layer->onDetach();
             m_layers.erase(it);

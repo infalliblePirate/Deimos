@@ -46,16 +46,15 @@ namespace Deimos {
         glBindVertexArray(m_rendererID); // make use the array is bound
         vertexBuffer->bind();
 
-        uint32_t index = 0;
         const auto& layout = vertexBuffer->getLayout();
         for (const auto& element : layout) {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, element.getComponentCount(),
+            glEnableVertexAttribArray(m_VertexBufferIndex);
+            glVertexAttribPointer(m_VertexBufferIndex, element.getComponentCount(),
                                   ShaderDataTypeToOpenGLBaseType(element.type),
                                   element.normalized ? GL_TRUE : GL_FALSE,
                                   layout.getStride(),
                                   (const void*)(intptr_t)element.offset);
-            index++;
+            m_VertexBufferIndex++;
         }
         m_vertexBuffers.push_back(vertexBuffer);
     }
