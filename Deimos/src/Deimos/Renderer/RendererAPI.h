@@ -15,6 +15,7 @@ namespace Deimos {
         virtual void clear() = 0;
 
         virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+        virtual void init() = 0;
 
         inline static API getAPI() { return s_API; }
     private:

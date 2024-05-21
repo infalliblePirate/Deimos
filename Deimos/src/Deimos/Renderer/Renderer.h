@@ -14,6 +14,7 @@ namespace Deimos {
         static void submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray>& vertexArray,
                            const glm::mat4& transform = glm::mat4(1.0f));
 
+        static void init();
         inline static RendererAPI::API getAPI () { return RendererAPI::getAPI(); }
     private:
         struct SceneData {

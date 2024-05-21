@@ -18,6 +18,10 @@ namespace Deimos {
         inline static void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) {
             s_rendererAPI->drawIndexed(vertexArray);
         }
+
+        inline static void init() {
+            s_rendererAPI->init();
+        }
     private:
         static RendererAPI* s_rendererAPI;
     };

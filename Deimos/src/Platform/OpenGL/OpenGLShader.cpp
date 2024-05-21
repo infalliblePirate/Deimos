@@ -112,27 +112,27 @@ namespace Deimos {
     void OpenGLShader::unbind() const {
         glUseProgram(0);
     }
-    void OpenGLShader::uploadFloat(const std::string &name, float value) {
+    void OpenGLShader::uploadUniformFloat(const std::string &name, float value) {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform1f(location, value);
     }
 
-    void OpenGLShader::uploadInt(const std::string &name, int value) {
+    void OpenGLShader::uploadUniformInt(const std::string &name, int value) {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform1i(location, value);
     }
 
-    void OpenGLShader::uploadFloat2(const std::string &name, const glm::vec2 &value) {
+    void OpenGLShader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value) {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform2f(location, value.x, value.y);
     }
 
-    void OpenGLShader::uploadFloat3(const std::string &name, const glm::vec3 &value) {
+    void OpenGLShader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value) {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform3f(location, value.x, value.y, value.z);
     }
 
-    void OpenGLShader::uploadFloat4(const std::string &name, const glm::vec4& value) {
+    void OpenGLShader::uploadUniformFloat4(const std::string &name, const glm::vec4& value) {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform4f(location, value.x, value.y, value.z, value.w);
     }

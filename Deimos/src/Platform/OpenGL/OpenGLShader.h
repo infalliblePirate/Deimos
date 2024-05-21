@@ -13,12 +13,12 @@ namespace Deimos {
         virtual void bind() const override;
         virtual void unbind() const override;
 
-        void uploadInt(const std::string& name, int value);
+        void uploadUniformInt(const std::string& name, int value);
 
-        void uploadFloat(const std::string& name, float value);
-        void uploadFloat2(const std::string& name, const glm::vec2& value);
-        void uploadFloat3(const std::string& name, const glm::vec3& value);
-        void uploadFloat4(const std::string& name, const glm::vec4& value);
+        void uploadUniformFloat(const std::string& name, float value);
+        void uploadUniformFloat2(const std::string& name, const glm::vec2& value);
+        void uploadUniformFloat3(const std::string& name, const glm::vec3& value);
+        void uploadUniformFloat4(const std::string& name, const glm::vec4& value);
 
         void uploadUniformMat4(const std::string& name, const glm::mat4& matrix);
         void uploadUniformMat3(const std::string& name, const glm::mat3& matrix);

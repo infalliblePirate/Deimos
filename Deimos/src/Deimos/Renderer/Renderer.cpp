@@ -22,5 +22,9 @@ namespace Deimos {
         vertexArray->bind();
         RenderCommand::drawIndexed(vertexArray);
     }
+
+    void Renderer::init() {
+        RenderCommand::init();
+    }
 }
 

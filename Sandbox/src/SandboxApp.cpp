@@ -156,6 +156,10 @@ public:
 
         m_TextureShader.reset(Deimos::Shader::create(textureVertexSrc, textureFragmentSrc));
         m_texture = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/go.jpeg");
+        m_texture2 = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/chessPiece.png");
+
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->bind();
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadUniformInt("u_texture", 0);
     }
 
     void onUpdate(Deimos::Timestep timestep) override {
@@ -189,15 +193,18 @@ public:
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.07f));
 
         //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->bind();
-        //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->uploadFloat4("u_color", m_color);
+        //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->uploadUniformFloat4("u_color", m_color);
 
         std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->bind();
 
-        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadInt("u_texture", 0);
-        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadFloat4("u_color", m_color);
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadUniformInt("u_texture", 0);
+        std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_TextureShader)->uploadUniformFloat4("u_color", m_color);
 
         m_texture->bind();
         Deimos::Renderer::submit(m_TextureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+        m_texture2->bind();
+        Deimos::Renderer::submit(m_TextureShader, m_squareVA, glm::translate(glm::mat4(1.0f), glm::vec3(0.8f, 0.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         Deimos::Renderer::endScene();
     }
@@ -220,7 +227,7 @@ private:
     Deimos::Ref<Deimos::VertexArray> m_vertexArray;
     Deimos::Ref<Deimos::VertexArray> m_squareVA;
 
-    Deimos::Ref<Deimos::Texture2D> m_texture;
+    Deimos::Ref<Deimos::Texture2D> m_texture, m_texture2;
 
     Deimos::OrthographicCamera m_camera;
     glm::vec3 m_cameraPosition{0.f};
