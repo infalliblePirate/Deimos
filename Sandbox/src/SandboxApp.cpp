@@ -122,39 +122,9 @@ public:
         )";
         m_plainColorShader.reset(Deimos::Shader::create(plainColorVertexSrc, plainColorFragmentSrc));
 
-        std::string textureVertexSrc = R"(
-            #version 330 core
+        //m_TextureShader.reset(Deimos::Shader::create(textureVertexSrc, textureFragmentSrc));
+        m_TextureShader.reset(Deimos::Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl"));
 
-            layout(location = 0) in vec3 a_position;
-            layout(location = 1) in vec2 a_texCoord;
-
-            uniform mat4 u_viewProjection;
-            uniform mat4 u_transform;
-
-            out vec2 v_texCoord;
-
-            void main() {
-                v_texCoord = a_texCoord;
-                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
-            }
-        )";
-
-        std::string textureFragmentSrc = R"(
-            #version 330 core
-
-            layout(location = 0) out vec4 color;
-
-            in vec2 v_texCoord;
-
-            uniform sampler2D u_texture;
-            uniform vec4 u_color;
-
-            void main() {
-                color = texture(u_texture, v_texCoord) * u_color;
-            }
-        )";
-
-        m_TextureShader.reset(Deimos::Shader::create(textureVertexSrc, textureFragmentSrc));
         m_texture = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/go.jpeg");
         m_texture2 = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/chessPiece.png");
 
