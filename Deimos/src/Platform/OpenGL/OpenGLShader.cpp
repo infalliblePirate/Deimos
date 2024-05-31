@@ -18,9 +18,17 @@ namespace Deimos {
         std::string src = readFile(filepath);
         std::unordered_map<GLenum, std::string> shaderSrc = preprocess(src);
         compile(shaderSrc);
+
+        // extract name from filepath
+        auto lastSlash = filepath.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = filepath.rfind(".");
+        auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+        m_name = filepath.substr(lastSlash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc) {
+    OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc)
+            : m_name(name) {
         std::unordered_map<GLenum, std::string> shaderSrc;
         shaderSrc[GL_VERTEX_SHADER] = vertexSrc;
         shaderSrc[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -28,7 +36,7 @@ namespace Deimos {
     }
 
     std::string OpenGLShader::readFile(const std::string &filepath) {
-        std::ifstream in(filepath, std::ios::binary);
+        std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
         std::string res;
         if (in) {
@@ -67,9 +75,11 @@ namespace Deimos {
         return shaderSources;
     }
 
-    void OpenGLShader::compile(const std::unordered_map<GLenum, std::string> shaderSources) {
+    void OpenGLShader::compile(const std::unordered_map<GLenum, std::string> &shaderSources) {
         GLuint program = glCreateProgram();
-        std::vector<GLuint> shaders(shaderSources.size());
+        DM_ASSERT(shaderSources.size() <= 2, "We only support 2 shader for now");
+        std::array<GLuint, 2> glShaderIDs{};
+        int glShaderIDIndex = 0;
         for (auto &[key, value]: shaderSources) {
             GLuint shader = glCreateShader(key);
 
@@ -96,7 +106,7 @@ namespace Deimos {
                 return;
             }
             glAttachShader(program, shader);
-
+            glShaderIDs[glShaderIDIndex++] = shader;
         }
         glLinkProgram(program);
 
@@ -110,7 +120,7 @@ namespace Deimos {
             glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
             glDeleteProgram(program);
-            for (auto &v: shaders) {
+            for (auto &v: glShaderIDs) {
                 glDeleteShader(v);
             }
 
@@ -119,7 +129,7 @@ namespace Deimos {
             return;
         }
 
-        for (auto &v: shaders) {
+        for (auto &v: glShaderIDs) {
             glDetachShader(program, v);
         }
 

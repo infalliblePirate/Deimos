@@ -92,7 +92,7 @@ public:
             }
         )";
 
-        m_shader.reset(Deimos::Shader::create(vertexSrc, fragmentSrc));
+        m_shader = Deimos::Shader::create("vertexPosColor", vertexSrc, fragmentSrc);
 
         std::string plainColorVertexSrc = R"(
             #version 330 core
@@ -120,10 +120,9 @@ public:
                 color = u_color;
             }
         )";
-        m_plainColorShader.reset(Deimos::Shader::create(plainColorVertexSrc, plainColorFragmentSrc));
+        //plainColorShader.reset(Deimos::Shader::create(plainColorVertexSrc, plainColorFragmentSrc));
 
-        //m_TextureShader.reset(Deimos::Shader::create(textureVertexSrc, textureFragmentSrc));
-        m_TextureShader.reset(Deimos::Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl"));
+        m_TextureShader = Deimos::Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl");
 
         m_texture = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/go.jpeg");
         m_texture2 = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/chessPiece.png");

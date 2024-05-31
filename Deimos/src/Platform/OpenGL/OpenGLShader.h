@@ -9,8 +9,10 @@ namespace Deimos {
     class OpenGLShader : public Shader {
     public:
         OpenGLShader(const std::string& filepath);
-        OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
         virtual ~OpenGLShader();
+
+        virtual const std::string& getName() const override { return m_name; }
 
         virtual void bind() const override;
         virtual void unbind() const override;
@@ -27,9 +29,10 @@ namespace Deimos {
     private:
         std::string readFile(const std::string& filepath);
         std::unordered_map<GLenum, std::string> preprocess(const std::string& source);
-        void compile(const std::unordered_map<GLenum, std::string> shaderSources);
+        void compile(const std::unordered_map<GLenum, std::string>& shaderSources);
     private:
         uint32_t m_rendererID;
+        std::string m_name;
     };
 }
 
