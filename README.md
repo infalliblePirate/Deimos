@@ -1,2 +1,0 @@
-# Deimos
-Deimos Engine
