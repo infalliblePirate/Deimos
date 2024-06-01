@@ -17,6 +17,8 @@ namespace Deimos {
         const glm::mat4& getProjectionMatrix() const { return m_viewProjectionMatrix; }
         const glm::mat4& getViewMatrix() const { return m_viewMatrix; }
         const glm::mat4& getViewProjectionMatrix() const { return m_viewProjectionMatrix; }
+
+        void setProjection(float left, float right, float bottom, float top);
     private:
         void recalculateViewMatrix();
     private:
@@ -25,7 +27,7 @@ namespace Deimos {
         glm::mat4 m_viewProjectionMatrix;
 
         glm::vec3 m_position = {0.f, 0.f, 0.f};
-       float m_rotation = 0.0f;
+        float m_rotation = 0.0f;
     };
 }
 

@@ -3,13 +3,14 @@
 
 #include "imgui/imgui.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Deimos/OrthographicCameraController.h"
 
 #include <glm/glm/gtc/matrix_transform.hpp>
 
 class ExampleLayer : public Deimos::Layer {
 public:
     ExampleLayer() : Layer("Example"),
-                     m_camera(-1.6f, 1.6f, -0.9f, 0.9f), m_cameraRotation(0.f) {
+                     m_cameraController(1280.f/720.f), m_cameraRotation(0.f) {
         m_vertexArray.reset(Deimos::VertexArray::create());
 
         float vertices[3 * 7]{
@@ -132,33 +133,14 @@ public:
     }
 
     void onUpdate(Deimos::Timestep timestep) override {
-        {
-            if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
-                m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
-            } else if (Deimos::Input::isKeyPressed(DM_KEY_RIGHT)) {
-                m_cameraPosition.x += m_cameraMoveSpeed * timestep;
-            }
-
-            if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
-                m_cameraPosition.y += m_cameraMoveSpeed * timestep;
-            } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
-                m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
-            }
-
-            if (Deimos::Input::isKeyPressed(DM_KEY_A)) {
-                m_cameraRotation += m_cameraRotationSpeed * timestep;
-            } else if (Deimos::Input::isKeyPressed(DM_KEY_D)) {
-                m_cameraRotation -= m_cameraRotationSpeed * timestep;
-            }
-        }
+        m_cameraController.onUpdate(timestep);
+        
 
         Deimos::RenderCommand::setClearColor({0.4, 0.2, 0.1, 1});
         Deimos::RenderCommand::clear();
 
-        m_camera.setPosition(m_cameraPosition);
-        m_camera.setRotation(m_cameraRotation);
 
-        Deimos::Renderer::beginScene(m_camera);
+        Deimos::Renderer::beginScene(m_cameraController.getCamera());
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.07f));
 
         //std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->bind();
@@ -185,7 +167,7 @@ public:
     }
 
     void onEvent(Deimos::Event &event) override {
-
+        m_cameraController.onEvent(event);
     }
 
 private:
@@ -198,7 +180,7 @@ private:
 
     Deimos::Ref<Deimos::Texture2D> m_texture, m_texture2;
 
-    Deimos::OrthographicCamera m_camera;
+    Deimos::OrthographicCameraController m_cameraController;
     glm::vec3 m_cameraPosition{0.f};
 
     float m_cameraMoveSpeed = 0.2f;

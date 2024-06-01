@@ -27,6 +27,8 @@ set(COMMON_SOURCES
         src/Deimos/Renderer/Texture.cpp
         src/Platform/OpenGL/OpenGLTexture2D.cpp
         src/Platform/OpenGL/OpenGLTexture2D.h
+        src/Deimos/OrthographicCameraController.cpp
+        src/Deimos/OrthographicCameraController.h
 )
 
 # Add compile options for SSE support
