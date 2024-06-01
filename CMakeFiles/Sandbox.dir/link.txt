@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/Sandbox.dir/src/SandboxApp.cpp.o -o Sandbox  ../bin/Deimos/libDeimos.a ../Deimos/vendor/spdlog/libspdlogd.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so ../Deimos/libimgui.a ../Deimos/vendor/GLFW/src/libglfw3.a /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl ../Deimos/vendor/glm/glm/libglm.a 
