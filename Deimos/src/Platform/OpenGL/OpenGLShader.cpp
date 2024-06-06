@@ -130,7 +130,7 @@ namespace Deimos {
         }
 
         for (auto &v: glShaderIDs) {
-            glDetachShader(program, v);
+            glDeleteShader(v);
         }
 
         m_rendererID = program;
