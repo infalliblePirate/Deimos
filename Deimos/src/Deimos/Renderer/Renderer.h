@@ -21,7 +21,7 @@ namespace Deimos {
         struct SceneData {
             glm::mat4 viewProjectionMatrix;
         };
-        static SceneData* s_sceneData;
+        static Scope<SceneData> s_sceneData;
     };
 
 }

@@ -8,7 +8,7 @@ namespace Deimos {
     Ref<Shader> Shader::create(const std::string &filepath) {
         switch (Renderer::getAPI()) {
             case RendererAPI::API::None:    DM_ASSERT(false, "Deimos currently does not support RendererAPI::None!");
-            case RendererAPI::API::OpenGL:  return std::make_unique<OpenGLShader>(filepath);
+            case RendererAPI::API::OpenGL:  return createRef<OpenGLShader>(filepath);
         }
         DM_ASSERT(false, "Unknown RendererAPI!");
     }
@@ -16,7 +16,7 @@ namespace Deimos {
     Ref<Shader> Shader::create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
         switch (Renderer::getAPI()) {
             case RendererAPI::API::None:    DM_ASSERT(false, "Deimos currently does not support RendererAPI::None!");
-            case RendererAPI::API::OpenGL:  return std::make_unique<OpenGLShader>(name, vertexSrc, fragmentSrc);
+            case RendererAPI::API::OpenGL:  return createRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
         }
         DM_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;

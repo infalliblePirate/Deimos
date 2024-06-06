@@ -27,7 +27,7 @@ namespace Deimos {
             s_rendererAPI->setViewport(x, y, width, height);
         }
     private:
-        static RendererAPI* s_rendererAPI;
+        static Scope<RendererAPI> s_rendererAPI;
     };
 }
 

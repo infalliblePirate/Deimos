@@ -5,7 +5,7 @@
 #include "Deimos/Application.h"
 
 namespace Deimos {
-    Input* Input::s_instance = new WindowsInput();
+    Scope<Input> Input::s_instance = createScope<WindowsInput>();
 
     bool WindowsInput::isKeyPressedImpl(int keycode) {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());

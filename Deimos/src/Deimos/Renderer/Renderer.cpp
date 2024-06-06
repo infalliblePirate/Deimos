@@ -3,7 +3,7 @@
 
 namespace Deimos {
 
-    Renderer::SceneData *Renderer::s_sceneData = new Renderer::SceneData;
+    Scope<Renderer::SceneData> Renderer::s_sceneData = createScope<Renderer::SceneData>();
 
     void Renderer::onWindowResize(uint32_t width, uint32_t height) {
         RenderCommand::setViewport(0, 0, width, height);

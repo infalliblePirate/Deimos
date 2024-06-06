@@ -50,7 +50,7 @@ namespace Deimos {
 
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
-        m_context = new OpenGLContext(m_window);
+        m_context = createScope<OpenGLContext>(m_window);
         m_context->init();
 
         // m_window will store a pointer to user-defined data, which could be later accessed

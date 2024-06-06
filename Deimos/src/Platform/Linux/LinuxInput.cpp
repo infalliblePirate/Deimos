@@ -7,7 +7,7 @@
 
 
 namespace Deimos {
-    Input* Input::s_instance = new LinuxInput();
+    Scope<Input> Input::s_instance = createScope<LinuxInput>();
 
     bool LinuxInput::isKeyPressedImpl(int keycode) {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());

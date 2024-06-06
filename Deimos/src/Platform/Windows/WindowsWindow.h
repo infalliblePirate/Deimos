@@ -31,7 +31,7 @@ namespace Deimos {
 
     private:
         GLFWwindow* m_window; // a base window, the whole WindowsWindow : Window is an overall window wtih extra custom data
-        GraphicsContext* m_context;
+        Scope<GraphicsContext> m_context;
 
         struct WindowData {
             std::string title;
