@@ -10,7 +10,7 @@
 class ExampleLayer : public Deimos::Layer {
 public:
     ExampleLayer() : Layer("Example"),
-                     m_cameraController(1280.f/720.f), m_cameraRotation(0.f) {
+                     m_cameraController(1280.f/720.f, true), m_cameraRotation(0.f) {
         m_vertexArray.reset(Deimos::VertexArray::create());
 
         float vertices[3 * 7]{
