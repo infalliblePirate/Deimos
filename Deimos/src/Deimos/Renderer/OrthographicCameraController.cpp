@@ -1,9 +1,9 @@
 #include "dmpch.h"
 #include "OrthographicCameraController.h"
 
-#include "Deimos/Input.h"
-#include "Deimos/KeyCodes.h"
-#include "Application.h"
+#include "Deimos/Core/Input.h"
+#include "Deimos/Core/KeyCodes.h"
+#include "Deimos/Core/Application.h"
 
 namespace Deimos {
     OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
@@ -34,7 +34,7 @@ namespace Deimos {
         }
 
         m_camera.setPosition(m_cameraPosition);
-        m_cameraTranslationSpeed = m_zoomLevel;
+        m_cameraTranslationSpeed = m_zoomLevel * 0.25f;
     }
 
     void OrthographicCameraController::onEvent(Event &e) {

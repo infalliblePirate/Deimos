@@ -1,7 +1,7 @@
 #ifndef ENGINE_LINUXWINDOW_H
 #define ENGINE_LINUXWINDOW_H
 
-#include "Deimos/Window.h"
+#include "Deimos/Core/Window.h"
 #include "Deimos/Renderer/GraphicsContext.h"
 #include "GLFW/glfw3.h"
 

@@ -3,11 +3,11 @@ add_library(_Deimos INTERFACE)
 
 # Group source files based on platform
 set(COMMON_SOURCES
-        src/Deimos/Application.cpp
-        src/Deimos/EntryPoint.h
-        src/Deimos/Layer.cpp
-        src/Deimos/LayerStack.cpp
-        src/Deimos/Log.cpp
+        src/Deimos/Core/Application.cpp
+        src/Deimos/Core/EntryPoint.h
+        src/Deimos/Core/Layer.cpp
+        src/Deimos/Core/LayerStack.cpp
+        src/Deimos/Core/Log.cpp
         src/Deimos/ImGui/ImGuiBuild.cpp
         src/Deimos/ImGui/ImGuiLayer.cpp
         src/Deimos/Renderer/OrthographicCamera.cpp
@@ -27,8 +27,8 @@ set(COMMON_SOURCES
         src/Deimos/Renderer/Texture.cpp
         src/Platform/OpenGL/OpenGLTexture2D.cpp
         src/Platform/OpenGL/OpenGLTexture2D.h
-        src/Deimos/OrthographicCameraController.cpp
-        src/Deimos/OrthographicCameraController.h
+        src/Deimos/Renderer/OrthographicCameraController.cpp
+        src/Deimos/Renderer/OrthographicCameraController.h
 )
 
 # Add compile options for SSE support

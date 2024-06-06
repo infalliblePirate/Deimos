@@ -1,7 +1,7 @@
 #ifndef ENGINE_LINUXINPUT_H
 #define ENGINE_LINUXINPUT_H
 
-#include "Deimos/Input.h"
+#include "Deimos/Core/Input.h"
 
 namespace Deimos {
 

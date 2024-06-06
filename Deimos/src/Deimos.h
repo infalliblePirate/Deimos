@@ -2,14 +2,14 @@
 #define ENGINE_DEIMOS_H
 
 //---------------FOR DEIMOS APPLICATIONS ONLY--------------
-#include "Deimos/Application.h"
-#include "Deimos/Layer.h"
-#include "Deimos/Log.h"
-#include "Deimos/Input.h"
-#include "Deimos/KeyCodes.h"
-#include "Deimos/MouseButtonCodes.h"
+#include "Deimos/Core/Application.h"
+#include "Deimos/Core/Layer.h"
+#include "Deimos/Core/Log.h"
+#include "Deimos/Core/Input.h"
+#include "Deimos/Core/KeyCodes.h"
+#include "Deimos/Core/MouseButtonCodes.h"
 
-#include "Deimos/OrthographicCameraController.h"
+#include "Deimos/Renderer/OrthographicCameraController.h"
 
 #include "Deimos/Core/Timestep.h"
 
@@ -22,6 +22,6 @@
 
 #include "Deimos/Renderer/Texture.h"
 
-#include "Deimos/EntryPoint.h"
+#include "Deimos/Core/EntryPoint.h"
 
 #endif //ENGINE_DEIMOS_H

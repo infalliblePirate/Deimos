@@ -1,7 +1,7 @@
 #ifndef ENGINE_WINDOWSINPUT_H
 #define ENGINE_WINDOWSINPUT_H
 
-#include "Deimos/Input.h"
+#include "Deimos/Core/Input.h"
 
 namespace Deimos {
 

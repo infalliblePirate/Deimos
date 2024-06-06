@@ -2,7 +2,7 @@
 #define ENGINE_EVENT_H
 
 #include "dmpch.h"
-#include "Deimos/Core.h"
+#include "Deimos/Core/Core.h"
 #include "../vendor/spdlog/include/spdlog/fmt/bundled/format.h" // used to define printable custom data
 
 namespace Deimos {

@@ -2,7 +2,7 @@
 
 #include "LinuxInput.h"
 #include "GLFW/glfw3.h"
-#include "Deimos/Application.h"
+#include "Deimos/Core/Application.h"
 
 
 

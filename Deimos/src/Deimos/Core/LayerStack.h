@@ -1,7 +1,7 @@
 #ifndef ENGINE_LAYERSTACK_H
 #define ENGINE_LAYERSTACK_H
 
-#include "Deimos/Core.h"
+#include "Core.h"
 #include "Layer.h"
 #include <vector>
 

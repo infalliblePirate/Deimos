@@ -1,7 +1,7 @@
 #ifndef ENGINE_WINDOW_H
 #define ENGINE_WINDOW_H
 
-#include "Deimos/Core.h"
+#include "Core.h"
 #include "Deimos/Events/Event.h"
 
 namespace Deimos {

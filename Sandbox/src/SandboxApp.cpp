@@ -3,7 +3,7 @@
 
 #include "imgui/imgui.h"
 #include "Platform/OpenGL/OpenGLShader.h"
-#include "Deimos/OrthographicCameraController.h"
+#include "Deimos/Renderer/OrthographicCameraController.h"
 
 #include <glm/glm/gtc/matrix_transform.hpp>
 

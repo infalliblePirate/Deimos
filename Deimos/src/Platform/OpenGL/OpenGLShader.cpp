@@ -34,7 +34,7 @@ namespace Deimos {
         shaderSrc[GL_FRAGMENT_SHADER] = fragmentSrc;
         compile(shaderSrc);
     }
-
+ 
     std::string OpenGLShader::readFile(const std::string &filepath) {
         std::ifstream in(filepath, std::ios::in | std::ios::binary);
 

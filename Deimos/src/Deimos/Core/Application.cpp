@@ -1,7 +1,7 @@
 #include "dmpch.h"
 #include "Application.h"
 
-#include "Events/ApplicationEvent.h"
+#include "Deimos/Events/ApplicationEvent.h"
 #include "spdlog/sinks/stdout_sinks.h"
 
 #include "Deimos/Renderer/Renderer.h"
@@ -43,6 +43,7 @@ namespace Deimos {
     void Application::onEvent(Event &e) {
         EventDispatcher dispatcher(e);
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+        dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
 
         // if handled an event, terminate (starts from overlays or last layers)
         for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
@@ -59,24 +60,34 @@ namespace Deimos {
         m_lastFrameTime = currentTime;
 
         while (m_running) {
-            for (Layer *layer: m_layerStack)
-                layer->onUpdate(deltaTime);
-
-
+            if (!m_isMinimized) {
+                for (Layer *layer: m_layerStack)
+                    layer->onUpdate(deltaTime);
+            }
             m_ImGuiLayer->begin();
             for (Layer *layer: m_layerStack) {
                 layer->onImGuiRender();
             }
             m_ImGuiLayer->end();
 
-
             m_window->onUpdate();
-
         }
     }
 
     bool Application::onWindowClose(WindowCloseEvent &e) {
         m_running = false;
         return true; // everything went great, the fun was handled
+    }
+
+    bool Application::onWindowResize(WindowResizeEvent &e) {
+        if(e.getWidth() == 0 || e.getHeight() == 0) {
+            m_isMinimized = true;
+            return false;
+        }
+
+        m_isMinimized = false;
+        Renderer::onWindowResize(e.getWidth(), e.getHeight());
+        return false; // every layer should be aware of this event
+
     }
 }

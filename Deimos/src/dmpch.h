@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Deimos/Log.h"
+#include "Deimos/Core/Log.h"
 
 #ifdef DM_PLATFORM_WINDOWS
     #include <Windows.h>

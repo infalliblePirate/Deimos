@@ -15,6 +15,7 @@ namespace Deimos {
                            const glm::mat4& transform = glm::mat4(1.0f));
 
         static void init();
+        static void onWindowResize(uint32_t width, uint32_t height);
         inline static RendererAPI::API getAPI () { return RendererAPI::getAPI(); }
     private:
         struct SceneData {
