@@ -22,11 +22,11 @@ namespace Deimos {
         }
 
         if (Deimos::Input::isKeyPressed(DM_KEY_UP)) {
-            m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-            m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+            m_cameraPosition.x -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+            m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         } else if (Deimos::Input::isKeyPressed(DM_KEY_DOWN)) {
-            m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-            m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+            m_cameraPosition.x += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+            m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         }
 
         if (m_rotation) {
