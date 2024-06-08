@@ -22,6 +22,4 @@
 
 #include "Deimos/Renderer/Texture.h"
 
-#include "Deimos/Core/EntryPoint.h"
-
 #endif //ENGINE_DEIMOS_H

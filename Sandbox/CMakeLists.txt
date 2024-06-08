@@ -5,7 +5,9 @@ elseif (WIN32)
 endif ()
 
 # Define the executable target
-add_executable(Sandbox src/SandboxApp.cpp)
+add_executable(Sandbox src/SandboxApp.cpp
+        src/Sandbox2D.cpp
+        src/Sandbox2D.h)
 
 # Set include directories for the executable
 target_include_directories(Sandbox PRIVATE src)

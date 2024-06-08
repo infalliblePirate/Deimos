@@ -29,7 +29,7 @@ namespace Deimos {
 
         glm::vec3 m_cameraPosition = { 0.f, 0.f, 0.f };
         float m_cameraRotation = 0.f;
-        float m_cameraTranslationSpeed = 10, m_cameraRotationSpeed = 20.f;
+        float m_cameraTranslationSpeed = 10, m_cameraRotationSpeed = 15.f;
 
     };
 }

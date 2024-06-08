@@ -1,17 +1,19 @@
-#include "iostream"
 #include "Deimos.h"
+
+#include "Deimos/Core/EntryPoint.h"
 
 #include "imgui/imgui.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Deimos/Renderer/OrthographicCameraController.h"
+#include "Sandbox2D.h"
 
 #include <glm/glm/gtc/matrix_transform.hpp>
 
 class ExampleLayer : public Deimos::Layer {
 public:
     ExampleLayer() : Layer("Example"),
-                     m_cameraController(1280.f/720.f, true), m_cameraRotation(0.f) {
-        m_vertexArray.reset(Deimos::VertexArray::create());
+                     m_cameraController(1280.f/720.f, true) {
+        m_vertexArray = Deimos::VertexArray::create();
 
         float vertices[3 * 7]{
                 -0.5f, -0.5f, 0.0f, 0.9f, 0.1f, 0.4f, 1.0f,
@@ -19,7 +21,7 @@ public:
                 0.0f, 0.5f, 0.0f, 0.3f, 0.8f, 0.1f, 1.0f
         };
         Deimos::Ref<Deimos::VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(Deimos::VertexBuffer::create(vertices, sizeof(vertices)));
+        vertexBuffer = Deimos::VertexBuffer::create(vertices, sizeof(vertices));
 
         Deimos::BufferLayout layout = {
                 {Deimos::ShaderDataType::Float3, "a_position"},
@@ -31,10 +33,10 @@ public:
         unsigned int indices[3] = {0, 1, 2};
 
         Deimos::Ref<Deimos::IndexBuffer> indexBuffer;
-        indexBuffer.reset(Deimos::IndexBuffer::create(indices, sizeof(indices) / sizeof(u_int)));
+        indexBuffer = Deimos::IndexBuffer::create(indices, sizeof(indices) / sizeof(u_int));
         m_vertexArray->setIndexBuffer(indexBuffer);
 
-        m_squareVA.reset(Deimos::VertexArray::create());
+        m_squareVA = Deimos::VertexArray::create();
 
         float squareVertices[5 * 4] = {
                 -0.5f, -0.5f, 0.0f, 0.f, 0.f,
@@ -44,7 +46,7 @@ public:
         };
 
         Deimos::Ref<Deimos::VertexBuffer> squareVB;
-        squareVB.reset(Deimos::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
+        squareVB = Deimos::VertexBuffer::create(squareVertices, sizeof(squareVertices));
         squareVB->setLayout({
                                     {Deimos::ShaderDataType::Float3, "a_position"},
                                     {Deimos::ShaderDataType::Float2, "a_texCoord"}
@@ -53,7 +55,7 @@ public:
 
         unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
         Deimos::Ref<Deimos::IndexBuffer> squareIB;
-        squareIB.reset(Deimos::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
+        squareIB = Deimos::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int));
         m_squareVA->setIndexBuffer(squareIB);
 
         // input a position
@@ -181,11 +183,6 @@ private:
     Deimos::Ref<Deimos::Texture2D> m_texture, m_texture2;
 
     Deimos::OrthographicCameraController m_cameraController;
-    glm::vec3 m_cameraPosition{0.f};
-
-    float m_cameraMoveSpeed = 0.2f;
-    float m_cameraRotation = 0.f;
-    float m_cameraRotationSpeed = 10.f;
 
     glm::vec4 m_color{1.f, 1.f, 1.0f, 1.0f};
 };
@@ -193,7 +190,7 @@ private:
 class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
-        pushLayer(new ExampleLayer);
+        pushLayer(new Sandbox2D);
     }
 
     ~Sandbox() {

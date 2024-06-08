@@ -100,7 +100,7 @@ namespace Deimos {
         virtual const BufferLayout& getLayout() const = 0;
         virtual void setLayout(const BufferLayout& layout) = 0;
 
-        static VertexBuffer* create(float* vertices, uint32_t size);
+        static Ref<VertexBuffer> create(float* vertices, uint32_t size);
     };
 
     class IndexBuffer {
@@ -110,7 +110,7 @@ namespace Deimos {
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
-        static IndexBuffer* create(uint32_t* indices, int count);
+        static Ref<IndexBuffer> create(uint32_t* indices, int count);
         virtual int getCount() const = 0;
     };
 }
