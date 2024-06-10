@@ -21,6 +21,7 @@ namespace Deimos {
     };
 }
 
+#ifdef DEBUG_BUILD
 // Core log macros
 #define DM_CORE_TRACE(...) Deimos::Log::getCoreLogger()->trace(__VA_ARGS__)
 #define DM_CORE_INFO(...) Deimos::Log::getCoreLogger()->info(__VA_ARGS__)
@@ -34,6 +35,19 @@ namespace Deimos {
 #define DM_WARN(...) Deimos::Log::getClientLogger()->warn(__VA_ARGS__)
 #define DM_ERROR(...) Deimos::Log::getClientLogger()->error(__VA_ARGS__)
 #define DM_CRITICAL(...) Deimos::Log::getClientLogger()->critical(__VA_ARGS__)
+#else
+// Define empty macros for release builds
+#define DM_CORE_TRACE(...)
+#define DM_CORE_INFO(...)
+#define DM_CORE_WARN(...)
+#define DM_CORE_ERROR(...)
+#define DM_CORE_CRITICAL(...)
 
+#define DM_TRACE(...)
+#define DM_INFO(...)
+#define DM_WARN(...)
+#define DM_ERROR(...)
+#define DM_CRITICAL(...)
+#endif // DEBUG_BUILD
 
 #endif //ENGINE_LOG_H

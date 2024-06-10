@@ -71,14 +71,8 @@ endif ()
 # Add debug-specific configurations
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for Debug build")
-    add_definitions(-DDEBUG)
-
-    # Path to spdlog CMakeLists.txt
-    add_subdirectory(vendor/spdlog)
-
-    # Add spdlog library
-    target_compile_options(spdlog PRIVATE -fPIC)
-    target_link_libraries(Deimos PUBLIC spdlog::spdlog)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD")
+    target_compile_definitions(Deimos PRIVATE DM_ENABLE_ASSERTS)
 endif ()
 
 # Add release-specific configurations
@@ -92,6 +86,13 @@ target_precompile_headers(Deimos PRIVATE "src/dmpch.h")
 # Set include directories for the library
 target_include_directories(Deimos PUBLIC src)
 target_include_directories(Deimos PUBLIC vendor)
+
+# Path to spdlog CMakeLists.txt
+add_subdirectory(vendor/spdlog)
+
+# Add spdlog library
+target_compile_options(spdlog PRIVATE -fPIC)
+target_link_libraries(Deimos PUBLIC spdlog::spdlog)
 
 # glfw disable the build for tests, examples, documentation:
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -155,7 +156,7 @@ target_link_libraries(Deimos PRIVATE glm)
 # Add dummy Cmake for imgui (to enable navigation through its functions)
 add_subdirectory(vendor/dummyCmake)
 
-target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
+target_compile_definitions(Deimos PUBLIC ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
 set(PROJECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
