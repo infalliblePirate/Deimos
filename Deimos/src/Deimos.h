@@ -14,6 +14,7 @@
 #include "Deimos/Core/Timestep.h"
 
 #include "Deimos/Renderer/Renderer.h"
+#include "Deimos/Renderer/Renderer2D.h"
 #include "Deimos/Renderer/RenderCommand.h"
 
 #include "Deimos/Renderer/Buffer.h"

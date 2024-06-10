@@ -29,6 +29,8 @@ set(COMMON_SOURCES
         src/Platform/OpenGL/OpenGLTexture2D.h
         src/Deimos/Renderer/OrthographicCameraController.cpp
         src/Deimos/Renderer/OrthographicCameraController.h
+        src/Deimos/Renderer/Renderer2D.cpp
+        src/Deimos/Renderer/Renderer2D.h
 )
 
 # Add compile options for SSE support
@@ -155,6 +157,10 @@ add_subdirectory(vendor/dummyCmake)
 
 target_compile_definitions(Deimos PUBLIC DM_ENABLE_ASSERTS ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
+
+set(PROJECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(ASSETS_DIR ${PROJECT_BASE_DIR}/../Sandbox/assets)
+add_definitions(-DASSETS_DIR="${ASSETS_DIR}")
 
 # Set output directories
 set_target_properties(Deimos PROPERTIES
