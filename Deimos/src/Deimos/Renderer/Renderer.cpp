@@ -20,8 +20,8 @@ namespace Deimos {
     void Renderer::submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray,
                           const glm::mat4& transform) {
         shader->bind();
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_viewProjection", s_sceneData->viewProjectionMatrix);
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_transform", transform);
+        shader->setMat4("u_viewProjection", s_sceneData->viewProjectionMatrix);
+        shader->setMat4("u_transform", transform);
 
         vertexArray->bind();
         RenderCommand::drawIndexed(vertexArray);

@@ -3,6 +3,7 @@
 
 #include "Deimos/Renderer/Renderer2D.h"
 #include "imgui/imgui.h"
+#include <Deimos/Renderer/Texture.h>
 
 Sandbox2D::Sandbox2D() : m_cameraController(1280 / 720.f, true) {
 
@@ -14,6 +15,7 @@ Sandbox2D::~Sandbox2D() {
 
 void Sandbox2D::onAttach() {
     Deimos::Renderer2D::init();
+    m_girlTexture = Deimos::Texture2D::create(std::string(ASSETS_DIR) + "/textures/go.jpeg");
 }
 
 void Sandbox2D::onDetach() {
@@ -26,13 +28,9 @@ void Sandbox2D::onUpdate(Deimos::Timestep timestep) {
     Deimos::RenderCommand::clear();
 
     Deimos::Renderer2D::beginScene(m_cameraController.getCamera());
-    Deimos::Renderer2D::drawQuad({ 0.f, 0.f }, { 1.f, 1.f }, { 0.8f, 0.2f, 0.3f, 1.f });
+    Deimos::Renderer2D::drawQuad({1.f, 1.f}, {1.f, 1.f}, m_girlTexture);
+    Deimos::Renderer2D::drawQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f });
     Deimos::Renderer2D::endScene();
-    // TODO: add these functions: Shader::setMat4, Shader::setFloat4;
-/*
-    std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->bind();
-    std::dynamic_pointer_cast<Deimos::OpenGLShader>(m_plainColorShader)->uploadUniformFloat4("u_color", m_imguiColor);
-*/
 }
 
 void Sandbox2D::onEvent(Deimos::Event &event) {

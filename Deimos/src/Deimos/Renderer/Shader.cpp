@@ -5,6 +5,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Deimos {
+
     Ref<Shader> Shader::create(const std::string &filepath) {
         switch (Renderer::getAPI()) {
             case RendererAPI::API::None:    DM_ASSERT(false, "Deimos currently does not support RendererAPI::None!");
@@ -13,7 +14,7 @@ namespace Deimos {
         DM_ASSERT(false, "Unknown RendererAPI!");
     }
 
-    Ref<Shader> Shader::create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
+    Ref<Shader> Shader::create(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc) {
         switch (Renderer::getAPI()) {
             case RendererAPI::API::None:    DM_ASSERT(false, "Deimos currently does not support RendererAPI::None!");
             case RendererAPI::API::OpenGL:  return createRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
@@ -22,12 +23,15 @@ namespace Deimos {
         return nullptr;
     }
 
+
+    ////////////////////////////////// library ///////////////////////////////////////////
+
     void ShaderLibrary::add(const std::string& name, const Ref<Shader> &shader) {
         DM_CORE_ASSERT(!exists(shader->getName()), "Shader already exists!");
         m_shaders[shader->getName()] = shader;
     }
 
-    void ShaderLibrary::add(const Ref <Shader> &shader) {
+    void ShaderLibrary::add(const Ref<Shader> &shader) {
         add(shader->getName(), shader);
     }
 

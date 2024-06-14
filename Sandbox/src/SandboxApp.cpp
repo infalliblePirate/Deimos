@@ -190,7 +190,7 @@ private:
 class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
-        pushLayer(new Sandbox2D);
+        pushLayer(new Sandbox2D());
     }
 
     ~Sandbox() {

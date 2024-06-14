@@ -19,8 +19,11 @@ private:
     glm::vec4 m_imguiColor{1.f, 1.f, 1.f, 1.f};
 
     Deimos::Ref<Deimos::Shader> m_plainColorShader;
+    Deimos::Ref<Deimos::Shader> m_textureShader;
 
     Deimos::Ref<Deimos::VertexArray> m_squareVA;
+
+    Deimos::Ref<Deimos::Texture2D> m_girlTexture;
 
     Deimos::OrthographicCameraController m_cameraController;
     glm::vec3 m_cameraPosition{0.f};
