@@ -2,10 +2,12 @@
 #define ENGINE_OPENGLTEXTURE2D_H
 
 #include "Deimos/Renderer/Texture.h"
+#include <glad/glad.h>
 
 namespace Deimos {
     class OpenGLTexture2D : public Texture2D {
     public:
+        OpenGLTexture2D(u_int32_t width, u_int32_t height);
         OpenGLTexture2D(const std::string& path);
         virtual ~OpenGLTexture2D() override;
 
@@ -13,11 +15,16 @@ namespace Deimos {
         virtual uint32_t getHeight() const override { return m_height; }
 
         virtual void bind(uint32_t slot = 0) const override;
+
+        virtual void setData(void* data, u_int32_t size) override;
     private:
         std::string m_path;
+
+        uint32_t m_rendererID;
         uint32_t m_width;
         uint32_t m_height;
-        uint32_t m_rendererID;
+
+        GLenum m_internalFormat, m_dataFormat;
     };
 }
 

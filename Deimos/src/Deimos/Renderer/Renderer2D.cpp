@@ -13,8 +13,8 @@
 namespace Deimos {
     struct Renderer2DStorage {
         Ref<VertexArray> quadVertexArray;
-        Ref<Shader> flatColorShader;
         Ref<Shader> textureShader;
+        Ref<Texture2D> m_whiteTexture;
     };
 
     static Renderer2DStorage* s_data;
@@ -30,24 +30,26 @@ namespace Deimos {
                 -0.5f, 0.5f, 0.0f, 0.f, 1.f
         };
 
-        Deimos::Ref<Deimos::VertexBuffer> squareVB;
-        squareVB = Deimos::VertexBuffer::create(squareVertices, sizeof(squareVertices));
+        Ref<VertexBuffer> squareVB;
+        squareVB = VertexBuffer::create(squareVertices, sizeof(squareVertices));
         squareVB->setLayout(
                 {
-                        { Deimos::ShaderDataType::Float3, "a_position" },
-                        { Deimos::ShaderDataType::Float2, "a_texCoord" }
+                        { ShaderDataType::Float3, "a_position" },
+                        { ShaderDataType::Float2, "a_texCoord" }
                 });
         s_data->quadVertexArray->addVertexBuffer(squareVB);
 
         unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
 
-        Deimos::Ref<Deimos::IndexBuffer> squareIB;
-        squareIB = Deimos::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int));
+        Ref<IndexBuffer> squareIB;
+        squareIB = IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int));
 
         s_data->quadVertexArray->setIndexBuffer(squareIB);
-        s_data->flatColorShader = Deimos::Shader::create(std::string(ASSETS_DIR) + "/shaders/PlainColor.glsl");
+        s_data->textureShader = Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl");
 
-        s_data->textureShader = Deimos::Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl");
+        s_data->m_whiteTexture = Texture2D::create(1, 1);
+        uint32_t whiteTextureData = 0xffffffff;
+        s_data->m_whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
 
         s_data->textureShader->bind();
         s_data->textureShader->setInt("u_texture", 0);
@@ -58,10 +60,9 @@ namespace Deimos {
     }
 
     void Renderer2D::beginScene(const OrthographicCamera &camera) {
-        s_data->flatColorShader->bind();
-        s_data->flatColorShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
-
         s_data->textureShader->bind();
+
+        s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
         s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
     }
 
@@ -74,11 +75,13 @@ namespace Deimos {
     }
 
     void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color) {
-        s_data->flatColorShader->bind();
+        s_data->textureShader->bind();
+        s_data->m_whiteTexture->bind();
 
         glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
-        s_data->flatColorShader->setMat4("u_transform", transform);
-        s_data->flatColorShader->setFloat4("u_color", color);
+        s_data->textureShader->setMat4("u_transform", transform);
+        s_data->textureShader->setFloat4("u_color", color);
+        s_data->textureShader->setInt("u_texture", 0);
 
         s_data->quadVertexArray->bind();
         RenderCommand::drawIndexed(s_data->quadVertexArray);
@@ -90,12 +93,12 @@ namespace Deimos {
 
     void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture> &texture) {
         s_data->textureShader->bind();
+        texture->bind();
 
         glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
         s_data->textureShader->setMat4("u_transform", transform);
         s_data->textureShader->setInt("u_texture", 0);
-
-        texture->bind();
+        s_data->textureShader->setFloat4("u_color", glm::vec4(1.f));
 
         s_data->quadVertexArray->bind();
         RenderCommand::drawIndexed(s_data->quadVertexArray);
