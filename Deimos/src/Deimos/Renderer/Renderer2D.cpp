@@ -63,7 +63,6 @@ namespace Deimos {
         s_data->textureShader->bind();
 
         s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
-        s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
     }
 
     void Renderer2D::endScene() {
