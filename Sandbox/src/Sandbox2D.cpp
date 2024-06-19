@@ -5,6 +5,43 @@
 #include "imgui/imgui.h"
 #include <Deimos/Renderer/Texture.h>
 
+#include <chrono>
+
+// Scope based timer
+template<class Fn>
+class Timer {
+public:
+    Timer(const char* name, Fn&& func) : m_name(name), m_stopped(false), m_func(func) {
+        m_startTimePoint = std::chrono::high_resolution_clock::now();
+    }
+
+    ~Timer() {
+        if (!m_stopped)
+            stop();
+    }
+
+    void stop() {
+        auto endTimepoint = std::chrono::high_resolution_clock::now();
+        long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimePoint).time_since_epoch().count();
+        long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+        m_stopped = true;
+
+        float duration = (end - start) * 0.001f;
+        m_func({ m_name, duration });
+    }
+
+private:
+    const char* m_name;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimePoint;
+    bool m_stopped;
+    Fn m_func;
+};
+
+#define PROFILE_SCOPE(name) Timer timer##__LINE__(name, [&](ProfileResult profileRes) { m_profileResults.push_back(profileRes); })
+
+
+////////////////////////////////// Sandbox //////////////////////////////////////////////
+
 Sandbox2D::Sandbox2D() : m_cameraController(1280 / 720.f, true) {
 
 }
@@ -22,15 +59,24 @@ void Sandbox2D::onDetach() {
 }
 
 void Sandbox2D::onUpdate(Deimos::Timestep timestep) {
-    m_cameraController.onUpdate(timestep);
+    {
+        PROFILE_SCOPE("CameraController::onUpdate");
+        m_cameraController.onUpdate(timestep);
+    }
 
-    Deimos::RenderCommand::setClearColor({0.3f, 0.2f, 0.8f, 1});
-    Deimos::RenderCommand::clear();
+    {
+        PROFILE_SCOPE("Renderer Prep");
+        Deimos::RenderCommand::setClearColor({0.3f, 0.2f, 0.8f, 1});
+        Deimos::RenderCommand::clear();
+    }
 
-    Deimos::Renderer2D::beginScene(m_cameraController.getCamera());
-    Deimos::Renderer2D::drawQuad({1.f, 1.f}, {1.f, 1.f}, m_girlTexture);
-    Deimos::Renderer2D::drawQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f });
-    Deimos::Renderer2D::endScene();
+    {
+        PROFILE_SCOPE("Renderer Draw");
+        Deimos::Renderer2D::beginScene(m_cameraController.getCamera());
+        Deimos::Renderer2D::drawQuad({1.f, 1.f}, {1.f, 1.f}, m_girlTexture);
+        Deimos::Renderer2D::drawQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f });
+        Deimos::Renderer2D::endScene();
+    }
 }
 
 void Sandbox2D::onEvent(Deimos::Event &event) {
@@ -40,5 +86,12 @@ void Sandbox2D::onEvent(Deimos::Event &event) {
 void Sandbox2D::onImGuiRender() {
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square color", (float *) &m_imguiColor);
+    for(auto &result : m_profileResults) {
+        char label[50];
+        strcpy(label, "%.3fms ");
+        strcat(label, result.name);
+        ImGui::Text(label, result.time);
+    }
+    m_profileResults.clear();
     ImGui::End();
 }

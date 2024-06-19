@@ -27,6 +27,12 @@ private:
 
     Deimos::OrthographicCameraController m_cameraController;
     glm::vec3 m_cameraPosition{0.f};
+
+    struct ProfileResult {
+        const char* name;
+        float time;
+    };
+    std::vector<ProfileResult> m_profileResults;
 };
 
 
