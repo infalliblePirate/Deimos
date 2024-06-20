@@ -15,6 +15,8 @@ namespace Deimos {
     Application *Application::s_instance = nullptr;
 
     Application::Application() {
+        DM_PROFILE_FUNCTION();
+
         DM_CORE_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
@@ -28,19 +30,25 @@ namespace Deimos {
     }
 
     Application::~Application() {
-
+        DM_PROFILE_FUNCTION();
     }
 
     void Application::pushLayer(Layer *layer) {
+        DM_PROFILE_FUNCTION();
+
         m_layerStack.pushLayer(layer);
     }
 
     void Application::pushOverlay(Layer *overlay) {
+        DM_PROFILE_FUNCTION();
+
         m_layerStack.pushOverlay(overlay);
     }
 
-    // whenever an even is occurred, it calls this function
+    // whenever event occurs, it calls this function
     void Application::onEvent(Event &e) {
+        DM_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher(e);
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
         dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
@@ -53,20 +61,29 @@ namespace Deimos {
         }
     }
 
-
     void Application::run() {
+        DM_PROFILE_FUNCTION();
+
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - m_lastFrameTime;
         m_lastFrameTime = currentTime;
 
         while (m_running) {
+            DM_PROFILE_SCOPE("RunLoop");
+
             if (!m_isMinimized) {
-                for (Layer *layer: m_layerStack)
-                    layer->onUpdate(deltaTime);
+                {
+                    DM_PROFILE_SCOPE("LayerStack onUpdate");
+                    for (Layer *layer : m_layerStack)
+                        layer->onUpdate(deltaTime);
+                }
             }
+            
             m_ImGuiLayer->begin();
-            for (Layer *layer: m_layerStack) {
-                layer->onImGuiRender();
+            {
+                DM_PROFILE_SCOPE("LayerStack onImGuiRender");
+                for (Layer *layer : m_layerStack)
+                    layer->onImGuiRender();
             }
             m_ImGuiLayer->end();
 
@@ -80,6 +97,7 @@ namespace Deimos {
     }
 
     bool Application::onWindowResize(WindowResizeEvent &e) {
+        DM_PROFILE_FUNCTION();
         if(e.getWidth() == 0 || e.getHeight() == 0) {
             m_isMinimized = true;
             return false;

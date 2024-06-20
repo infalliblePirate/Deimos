@@ -12,7 +12,7 @@
 
 namespace Deimos {
     // static because should only be inited once no matter how many windows
-    static bool s_GLFInitialized = false;
+    static uint8_t s_GLFWWindowCount = 0;
 
     static void GLFWErrorCallback(int error, const char *description) {
         DM_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
@@ -23,21 +23,27 @@ namespace Deimos {
     }
 
     WindowsWindow::WindowsWindow(const WindowProps &props) {
+        DM_PROFILE_FUNCTION();
+
         init(props);
     }
 
     WindowsWindow::~WindowsWindow() {
+        DM_PROFILE_FUNCTION();
+
         shutdown();
     }
 
     void WindowsWindow::init(const Deimos::WindowProps &props) {
+        DM_PROFILE_FUNCTION();
+
         m_data.title = props.title;
         m_data.width = props.width;
         m_data.height = props.height;
 
         DM_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
 
-        if (!s_GLFInitialized) {
+        if (s_GLFWWindowCount == 0) {
             // TODO glfw terminate on system shutdown
             int success = glfwInit();
             DM_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -45,11 +51,15 @@ namespace Deimos {
             glfwSetErrorCallback([](int error, const char *description) {
                 DM_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
             });
-            s_GLFInitialized = true;
         }
 
-        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-        m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
+        {
+            glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+            DM_PROFILE_SCOPE("glfwCreateWindow");
+            m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
+            ++s_GLFWWindowCount;
+        }
+        
         m_context = createScope<OpenGLContext>(m_window);
         m_context->init();
 
@@ -134,15 +144,21 @@ namespace Deimos {
     }
 
     void WindowsWindow::onUpdate() {
+        DM_PROFILE_FUNCTION();
+
         glfwPollEvents(); // processes window events
         m_context->swapBuffers();
     }
 
     void WindowsWindow::shutdown() {
+        DM_PROFILE_FUNCTION();
+
         glfwDestroyWindow(m_window);
     }
 
     void WindowsWindow::setVSync(bool enabled) {
+        DM_PROFILE_FUNCTION();
+
         if (enabled)
             glfwSwapInterval(1); // sets vertical synchronization with the refresh rate of a monitor
         else

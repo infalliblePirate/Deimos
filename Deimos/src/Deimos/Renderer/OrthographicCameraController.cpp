@@ -13,6 +13,8 @@ namespace Deimos {
     }
 
     void OrthographicCameraController::onUpdate(Deimos::Timestep ts) {
+        DM_PROFILE_FUNCTION();
+
         if (Deimos::Input::isKeyPressed(DM_KEY_LEFT)) {
             m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
             m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
@@ -46,12 +48,16 @@ namespace Deimos {
     }
 
     void OrthographicCameraController::onEvent(Event &e) {
+        DM_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher(e);
         dispatcher.dispatch<MouseScrolledEvent>(DM_BIND_EVENT_FN(OrthographicCameraController::onMouseScrolled));
         dispatcher.dispatch<WindowResizeEvent>(DM_BIND_EVENT_FN(OrthographicCameraController::onWindowResized));
     }
 
     bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent & e) {
+        DM_PROFILE_FUNCTION();
+
         m_zoomLevel -= e.getYOffset() * 0.25f;
         m_zoomLevel = std::max(m_zoomLevel, 0.25f);
         m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
@@ -59,6 +65,8 @@ namespace Deimos {
     }
 
     bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e) {
+        DM_PROFILE_FUNCTION();
+        
         m_aspectRatio = (float) e.getWidth() / (float) e.getHeight();
         m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
         return false;

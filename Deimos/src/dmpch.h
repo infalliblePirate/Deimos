@@ -15,6 +15,7 @@
 #include <unordered_set>
 
 #include "Deimos/Core/Log.h"
+#include "Deimos/Debug/Instrumentor.h"
 
 #ifdef DM_PLATFORM_WINDOWS
     #include <Windows.h>

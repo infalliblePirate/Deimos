@@ -4,7 +4,6 @@
 #include <glm/glm/gtc/type_ptr.hpp>
 
 namespace Deimos {
-
     static GLenum getShaderTypeFromString(const std::string &str) {
         if (str == "fragment" || str == "pixel")
             return GL_FRAGMENT_SHADER;
@@ -15,6 +14,8 @@ namespace Deimos {
     }
 
     OpenGLShader::OpenGLShader(const std::string &filepath) {
+        DM_PROFILE_FUNCTION();
+
         std::string src = readFile(filepath);
         std::unordered_map<GLenum, std::string> shaderSrc = preprocess(src);
         compile(shaderSrc);
@@ -29,15 +30,24 @@ namespace Deimos {
 
     OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc)
             : m_name(name) {
+        DM_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> shaderSrc;
         shaderSrc[GL_VERTEX_SHADER] = vertexSrc;
         shaderSrc[GL_FRAGMENT_SHADER] = fragmentSrc;
         compile(shaderSrc);
     }
  
-    std::string OpenGLShader::readFile(const std::string &filepath) {
-        std::ifstream in(filepath, std::ios::in | std::ios::binary);
+    OpenGLShader::~OpenGLShader() {
+        DM_PROFILE_FUNCTION();
 
+        glDeleteProgram(m_rendererID);
+    }
+
+    std::string OpenGLShader::readFile(const std::string &filepath) {
+        DM_PROFILE_FUNCTION();
+
+        std::ifstream in(filepath, std::ios::in | std::ios::binary);
         std::string res;
         if (in) {
             in.seekg(0, std::ios::end);
@@ -51,6 +61,8 @@ namespace Deimos {
     }
 
     std::unordered_map<GLenum, std::string> OpenGLShader::preprocess(const std::string &source) {
+        DM_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> shaderSources;
 
         const char *typeToken = "#type";
@@ -76,6 +88,8 @@ namespace Deimos {
     }
 
     void OpenGLShader::compile(const std::unordered_map<GLenum, std::string> &shaderSources) {
+        DM_PROFILE_FUNCTION();
+
         GLuint program = glCreateProgram();
         DM_ASSERT(shaderSources.size() <= 2, "We only support 2 shader for now");
         std::array<GLuint, 2> glShaderIDs{};
@@ -136,31 +150,39 @@ namespace Deimos {
         m_rendererID = program;
     }
 
-    OpenGLShader::~OpenGLShader() {
-        glDeleteProgram(m_rendererID);
-    }
-
     void OpenGLShader::bind() const {
+        DM_PROFILE_FUNCTION();
+
         glUseProgram(m_rendererID);
     }
 
     void OpenGLShader::unbind() const {
+        DM_PROFILE_FUNCTION();
+
         glUseProgram(0);
     }
 
     void OpenGLShader::setInt(const std::string &name, int value) {
+        DM_PROFILE_FUNCTION();
+
         uploadUniformInt(name, value);
     }
   
     void OpenGLShader::setFloat3(const std::string &name, const glm::vec3 &value) {
+        DM_PROFILE_FUNCTION();
+
         uploadUniformFloat3(name, value);
     }
 
     void OpenGLShader::setFloat4(const std::string &name, const glm::vec4 &value) {
+        DM_PROFILE_FUNCTION();
+
         uploadUniformFloat4(name, value);
     }
 
     void OpenGLShader::setMat4(const std::string &name, const glm::mat4 &value) {
+        DM_PROFILE_FUNCTION();
+
         uploadUniformMat4(name, value);
     }
 
@@ -174,7 +196,7 @@ namespace Deimos {
         glUniform1f(location, value);
     }
 
-    void OpenGLShader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value) {
+    void OpenGLShader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value) {        
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniform2f(location, value.x, value.y);
     }
