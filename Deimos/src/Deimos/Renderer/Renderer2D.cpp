@@ -20,6 +20,8 @@ namespace Deimos {
     static Renderer2DStorage* s_data;
 
     void Renderer2D::init() {
+        DM_PROFILE_FUNCTION();
+
         s_data = new Renderer2DStorage();
 
         s_data->quadVertexArray = Deimos::VertexArray::create();
@@ -56,17 +58,20 @@ namespace Deimos {
     }
 
     void Renderer2D::shutdown() {
+        DM_PROFILE_FUNCTION();
+
         delete s_data;
     }
 
     void Renderer2D::beginScene(const OrthographicCamera &camera) {
-        s_data->textureShader->bind();
+        DM_PROFILE_FUNCTION();
 
+        s_data->textureShader->bind();
         s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
     }
 
     void Renderer2D::endScene() {
-
+        DM_PROFILE_FUNCTION();
     }
 
     void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color) {
@@ -74,6 +79,8 @@ namespace Deimos {
     }
 
     void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color) {
+        DM_PROFILE_FUNCTION();
+
         s_data->textureShader->bind();
         s_data->m_whiteTexture->bind();
 
@@ -91,6 +98,8 @@ namespace Deimos {
     }
 
     void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture> &texture) {
+        DM_PROFILE_FUNCTION();
+        
         s_data->textureShader->bind();
         texture->bind();
 

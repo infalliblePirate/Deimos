@@ -25,22 +25,32 @@ namespace Deimos {
     }
 
     OpenGLVertexArray::OpenGLVertexArray() {
+        DM_PROFILE_FUNCTION();
+
         glCreateVertexArrays(1, &m_rendererID);
     }
 
     OpenGLVertexArray::~OpenGLVertexArray() {
+        DM_PROFILE_FUNCTION();
+
         glDeleteVertexArrays(1, &m_rendererID);
     }
 
     void OpenGLVertexArray::bind() const {
+        DM_PROFILE_FUNCTION();
+
         glBindVertexArray(m_rendererID);
     }
 
     void OpenGLVertexArray::unbind() const {
+        DM_PROFILE_FUNCTION();
+
         glBindVertexArray(0);
     }
 
     void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer) {
+        DM_PROFILE_FUNCTION();
+
         DM_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex Buffer has no layout!");
 
         glBindVertexArray(m_rendererID); // make use the array is bound
@@ -60,6 +70,8 @@ namespace Deimos {
     }
 
     void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer> &indexBuffer) {
+        DM_PROFILE_FUNCTION();
+        
         glBindVertexArray(m_rendererID);
         indexBuffer->bind();
 

@@ -12,6 +12,8 @@ namespace Deimos {
     }
 
     void OpenGLContext::init() {
+        DM_PROFILE_FUNCTION();
+
         glfwMakeContextCurrent(m_windowHandle);
         int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         DM_CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -23,6 +25,8 @@ namespace Deimos {
     }
 
     void OpenGLContext::swapBuffers() {
+        DM_PROFILE_FUNCTION();
+        
         glfwSwapBuffers(m_windowHandle);
     }
 }

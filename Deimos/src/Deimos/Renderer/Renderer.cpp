@@ -28,6 +28,8 @@ namespace Deimos {
     }
 
     void Renderer::init() {
+        DM_PROFILE_FUNCTION();
+        
         RenderCommand::init();
     }
 }
