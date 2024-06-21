@@ -152,6 +152,9 @@ namespace Deimos {
 
     void WindowsWindow::shutdown() {
         DM_PROFILE_FUNCTION();
+        
+        if(--s_GLFWWindowCount == 0)
+            glfwTerminate();
 
         glfwDestroyWindow(m_window);
     }

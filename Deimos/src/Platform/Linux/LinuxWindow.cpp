@@ -157,6 +157,9 @@ namespace Deimos {
         DM_PROFILE_FUNCTION();
 
         glfwDestroyWindow(m_window);
+
+        if(--s_GLFWWindowCount == 0) 
+            glfwTerminate();
     }
 
     void LinuxWindow::setVSync(bool enabled) {
