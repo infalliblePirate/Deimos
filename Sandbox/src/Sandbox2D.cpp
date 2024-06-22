@@ -51,7 +51,7 @@ void Sandbox2D::onEvent(Deimos::Event &event) {
 
 void Sandbox2D::onImGuiRender() {
     DM_PROFILE_FUNCTION();
-    
+        
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square color", (float *) &m_imguiColor);
     for(auto &result : m_profileResults) {
