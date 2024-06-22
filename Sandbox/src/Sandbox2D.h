@@ -6,13 +6,13 @@
 class Sandbox2D : public Deimos::Layer {
 public:
     Sandbox2D();
-    ~Sandbox2D();
+    virtual ~Sandbox2D() = default;
 
     virtual void onAttach() override;
     virtual void onDetach() override;
 
     virtual void onUpdate(Deimos::Timestep timestep) override;
-    virtual void onEvent(Deimos::Event &event);
+    virtual void onEvent(Deimos::Event &event) override;
 
     virtual void onImGuiRender() override;
 private:

@@ -5,13 +5,9 @@
 
 #include "Deimos/Renderer/Renderer2D.h"
 #include "imgui/imgui.h"
-#include <Deimos/Renderer/Texture.h>
+#include "Deimos/Renderer/Texture.h"
 
 Sandbox2D::Sandbox2D() : m_cameraController(1280 / 720.f, true) {
-
-}
-
-Sandbox2D::~Sandbox2D() {
 
 }
 

@@ -7,7 +7,9 @@ endif ()
 # Define the executable target
 add_executable(Sandbox src/SandboxApp.cpp
         src/Sandbox2D.cpp
-        src/Sandbox2D.h)
+        src/Sandbox2D.h
+        src/ExampleLayer.cpp
+        src/ExampleLayer.h)
 
 # Set include directories for the executable
 target_include_directories(Sandbox PRIVATE src)
