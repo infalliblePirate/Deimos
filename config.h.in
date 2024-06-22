@@ -1,0 +1,4 @@
+#pragma once
+
+#define ASSETS_DIR @ASSETS_DIR@
+#define DEBUG_DIR @DEBUG_DIR@

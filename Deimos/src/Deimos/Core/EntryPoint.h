@@ -8,15 +8,16 @@ extern Deimos::Application* Deimos::createApplication();
 int main(int argc, char **argv) {
     Deimos::Log::init();
 
-    DM_PROFILE_BEGIN_SESSION("Startup", "DeimosProfile-Startup.json");
+    std::cout << "DEBUG DIR: " << std::string(DEBUG_DIR) + "/DebugInfo/DeimosProfile-Startup.json";
+    DM_PROFILE_BEGIN_SESSION("Startup",  std::string(DEBUG_DIR) + "/DebugInfo/DeimosProfile-Startup.json");
     auto app = Deimos::createApplication();
     DM_PROFILE_END_SESSION();
 
-    DM_PROFILE_BEGIN_SESSION("Runtime", "DeimosProfile-Runtime.json");
+    DM_PROFILE_BEGIN_SESSION("Runtime",  std::string(DEBUG_DIR) + "/DebugInfo/DeimosProfile-Runtime.json");
     app->run();
     DM_PROFILE_END_SESSION();
 
-    DM_PROFILE_BEGIN_SESSION("Shutdown", "DeimosProfile-Shutdown.json");
+    DM_PROFILE_BEGIN_SESSION("Shutdown",  std::string(DEBUG_DIR) + "/DebugInfo/DeimosProfile-Shutdown.json");
     delete app;
     DM_PROFILE_END_SESSION();
 }

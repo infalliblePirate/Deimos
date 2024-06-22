@@ -1,6 +1,8 @@
 #ifndef ENGINE_DMPCH_H
 #define ENGINE_DMPCH_H
 
+#include "config.h"
+
 #include <iostream>
 #include <utility>
 #include <algorithm>

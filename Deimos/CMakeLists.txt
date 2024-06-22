@@ -159,15 +159,9 @@ add_subdirectory(vendor/dummyCmake)
 target_compile_definitions(Deimos PUBLIC ${DM_PLATFORM} DM_BUILD_DLL
         GLFW_INCLUDE_NONE) # GLFW won't include any GL headers, add GLAD to get the headers
 
-set(PROJECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(ASSETS_DIR ${PROJECT_BASE_DIR}/../Sandbox/assets)
-add_definitions(-DASSETS_DIR="${ASSETS_DIR}")
-
 # Set output directories
 set_target_properties(Deimos PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
 )
-
-
