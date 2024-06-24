@@ -11,14 +11,14 @@
 #include "Deimos/Renderer/OrthographicCamera.h"
 #include "Deimos/Core/Timestep.h"
 
+extern int main(int argc, char** argv);
+
 namespace Deimos {
 
     class DM_API Application {
     public:
         Application();
         virtual ~Application();
-
-        void run();
 
         void onEvent(Event& e);
 
@@ -28,22 +28,26 @@ namespace Deimos {
         inline Window& getWindow() { return *m_window; }
         inline static Application& get() { return *s_instance; }
     private:
+        friend int ::main(int argc, char** argv);
+        void run();
+
         bool onWindowClose(WindowCloseEvent &e);
         bool onWindowResize(WindowResizeEvent& e);
+    private:
         std::unique_ptr<Window> m_window;
-
-        bool m_running = true;
 
         LayerStack m_layerStack;
         ImGuiLayer* m_ImGuiLayer;
 
         Timestep m_lastFrameTime = 0.f;
+
+        bool m_running = true;
+        bool m_isMinimized = false;
     private:
         static Application* s_instance;
-        bool m_isMinimized = false;
     };
 
-    // tob be defined in client
+    // to be defined in client
     Application* createApplication();
 }
 
