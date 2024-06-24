@@ -1,17 +1,21 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <chrono>
-#include <algorithm>
+#include <iomanip>
 #include <fstream>
 
 #include <thread>
 
 namespace Deimos {
+	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
+
 	struct ProfileResult {
 		std::string name;
-		long long start, end;
-		uint32_t threadID;
+		FloatingPointMicroseconds start;
+		std::chrono::microseconds elapsedTime;
+		std::thread::id threadID;
 	};
 
 	struct InstrumentationSession {
@@ -48,14 +52,15 @@ namespace Deimos {
 			std::string name = result.name;
 			std::replace(name.begin(), name.end(), '"', '\'');
 
+			m_outputStream << std::setprecision(3) << std::fixed;
 			m_outputStream << "{";
 			m_outputStream << "\"cat\":\"function\",";
-			m_outputStream << "\"dur\":" << (result.end - result.start) << ',';
+			m_outputStream << "\"dur\":" << (result.elapsedTime.count()) << ',';
 			m_outputStream << "\"name\":\"" << name << "\",";
 			m_outputStream << "\"ph\":\"X\",";
 			m_outputStream << "\"pid\":0,";
 			m_outputStream << "\"tid\":" << result.threadID << ",";
-			m_outputStream << "\"ts\":" << result.start;
+			m_outputStream << "\"ts\":" << result.start.count();
 			m_outputStream << "}";
 
 			m_outputStream.flush();
@@ -80,7 +85,7 @@ namespace Deimos {
 	class InstrumentationTimer {
 	public:
 		InstrumentationTimer(const char* name) : m_name(name), m_stopped(false) {
-			m_startTimepoint = std::chrono::high_resolution_clock::now();
+			m_startTimepoint = std::chrono::steady_clock::now();
 		}
 
 		~InstrumentationTimer() {
@@ -89,19 +94,18 @@ namespace Deimos {
 		}
 
 		void stop() {
-			auto endTimepoint = std::chrono::high_resolution_clock::now();
+			auto endTimepoint = std::chrono::steady_clock::now();
 
-			long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimepoint).time_since_epoch().count();
-			long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+			auto highResStart = FloatingPointMicroseconds{ m_startTimepoint.time_since_epoch() };
+			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimepoint).time_since_epoch();			std::thread::id id = std::this_thread::get_id();
 
-			uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-			Instrumentor::get().writeProfile({ m_name, start, end, threadID });
+			Instrumentor::get().writeProfile({ m_name, highResStart, elapsedTime, id });
 
 			m_stopped = true;
 		}
 	private:
 		const char* m_name;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimepoint;
+		std::chrono::time_point<std::chrono::steady_clock> m_startTimepoint;
 		bool m_stopped;
 	};
 }
