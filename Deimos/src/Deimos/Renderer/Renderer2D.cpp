@@ -14,7 +14,7 @@ namespace Deimos {
     struct Renderer2DStorage {
         Ref<VertexArray> quadVertexArray;
         Ref<Shader> textureShader;
-        Ref<Texture2D> m_whiteTexture;
+        Ref<Texture2D> whiteTexture;
     };
 
     static Renderer2DStorage* s_data;
@@ -49,9 +49,9 @@ namespace Deimos {
         s_data->quadVertexArray->setIndexBuffer(squareIB);
         s_data->textureShader = Shader::create(std::string(ASSETS_DIR) + "/shaders/Texture.glsl");
 
-        s_data->m_whiteTexture = Texture2D::create(1, 1);
+        s_data->whiteTexture = Texture2D::create(1, 1);
         uint32_t whiteTextureData = 0xffffffff;
-        s_data->m_whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
+        s_data->whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
 
         s_data->textureShader->bind();
         s_data->textureShader->setInt("u_texture", 0);
@@ -74,30 +74,53 @@ namespace Deimos {
         DM_PROFILE_FUNCTION();
     }
 
-    void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color) {
-        drawQuad({ position.x, position.y, 0.f }, size, color);
+    void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
+        drawQuad({ position.x, position.y, 0.f }, size, color, tilingFactor, tintColor);
     }
 
-    void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color) {
+    void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
         DM_PROFILE_FUNCTION();
 
         s_data->textureShader->bind();
-        s_data->m_whiteTexture->bind();
+        s_data->whiteTexture->bind();
 
         glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
         s_data->textureShader->setMat4("u_transform", transform);
-        s_data->textureShader->setFloat4("u_color", color);
+        s_data->textureShader->setFloat4("u_color", color * tintColor);
         s_data->textureShader->setInt("u_texture", 0);
+        s_data->textureShader->setFloat("u_tilingFactor", tilingFactor);
 
         s_data->quadVertexArray->bind();
         RenderCommand::drawIndexed(s_data->quadVertexArray);
     }
 
-    void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture> &texture) {
-        drawQuad({ position.x, position.y, 0.f }, size, texture);
+    /**@param rotation The rotation of the quad in radians*/
+    void Renderer2D::drawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4& tintColor) {
+        drawRotatedQuad({ position.x, position.y, 0 }, size, color, rotation, tilingFactor, tintColor);
     }
 
-    void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture> &texture) {
+    /**@param rotation The rotation of the quad in radians*/
+    void Renderer2D::drawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4& tintColor) {
+        DM_PROFILE_FUNCTION()
+
+        s_data->textureShader->bind();
+        s_data->whiteTexture->bind();
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::rotate(glm::mat4(1.f), rotation, { 0, 0, 1}) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
+        s_data->textureShader->setMat4("u_transform", transform);
+        s_data->textureShader->setFloat4("u_color", color * tintColor);
+        s_data->textureShader->setInt("u_texture", 0);
+        s_data->textureShader->setFloat("u_tilingFactor", tilingFactor);
+
+        s_data->quadVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->quadVertexArray);
+    }
+
+    void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture> &texture, float tilingFactor, const glm::vec4& tintColor) {
+        drawQuad({ position.x, position.y, 0.f }, size, texture, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture> &texture, float tilingFactor, const glm::vec4& tintColor) {
         DM_PROFILE_FUNCTION();
         
         s_data->textureShader->bind();
@@ -105,8 +128,31 @@ namespace Deimos {
 
         glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
         s_data->textureShader->setMat4("u_transform", transform);
+        s_data->textureShader->setFloat4("u_color", tintColor);
         s_data->textureShader->setInt("u_texture", 0);
-        s_data->textureShader->setFloat4("u_color", glm::vec4(1.f));
+        s_data->textureShader->setFloat("u_tilingFactor", tilingFactor);
+
+        s_data->quadVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->quadVertexArray);
+    }
+
+    /**@param rotation The rotation of the quad in radians*/
+    void Renderer2D::drawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture> &texture, float rotation, float tilingFactor, const glm::vec4& tintColor) {
+        drawRotatedQuad({ position.x, position.y, 0.f }, size, texture, rotation, tilingFactor, tintColor);
+    }
+
+    /**@param rotation The rotation of the quad in radians*/
+    void Renderer2D::drawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture> &texture, float rotation, float tilingFactor, const glm::vec4& tintColor) {
+        DM_PROFILE_FUNCTION()
+
+        s_data->textureShader->bind();
+        texture->bind();
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::rotate(glm::mat4(1.f), rotation, { 0, 0, 1}) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f });
+        s_data->textureShader->setMat4("u_transform", transform);
+        s_data->textureShader->setFloat4("u_color", tintColor);
+        s_data->textureShader->setInt("u_texture", 0);
+        s_data->textureShader->setFloat("u_tilingFactor", tilingFactor);
 
         s_data->quadVertexArray->bind();
         RenderCommand::drawIndexed(s_data->quadVertexArray);

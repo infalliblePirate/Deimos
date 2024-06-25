@@ -13,11 +13,17 @@ namespace Deimos {
         static void beginScene(const OrthographicCamera &camera);
         static void endScene();
 
-        static void drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
-        static void drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color);
+        // with color
+        static void drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
 
-        static void drawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture>& texture);
-        static void drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture>& texture);
+        // with texture
+        static void drawQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture>& texture, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture>& texture, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, const Ref<Texture>& texture, float rotation, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+        static void drawRotatedQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture>& texture, float rotation, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
     };
 }
 
