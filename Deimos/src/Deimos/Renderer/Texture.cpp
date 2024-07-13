@@ -9,7 +9,7 @@
 
 namespace Deimos {
 
-    Ref<Texture2D> Texture2D::create(u_int32_t width, u_int32_t height) {
+    Ref<Texture2D> Texture2D::create(uint32_t width, uint32_t height) {
         switch(Renderer::getAPI()) {
             case RendererAPI::API::None: DM_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(width, height);

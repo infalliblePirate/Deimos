@@ -63,6 +63,7 @@ endif ()
 # Add Deimos library
 add_library(Deimos STATIC ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
+set(CMAKE_BUILD_TYPE "Release")
 # Set default build type to Debug
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -78,6 +79,8 @@ endif ()
 # Add release-specific configurations
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring for Release build")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
+    target_compile_definitions(Deimos PRIVATE DM_RELEASE_BUILD)
 endif ()
 
 # Enable precompiled header for source files

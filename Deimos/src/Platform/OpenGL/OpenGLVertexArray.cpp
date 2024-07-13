@@ -53,7 +53,7 @@ namespace Deimos {
 
         DM_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex Buffer has no layout!");
 
-        glBindVertexArray(m_rendererID); // make use the array is bound
+        glBindVertexArray(m_rendererID); // make sure the array is bound
         vertexBuffer->bind();
 
         const auto& layout = vertexBuffer->getLayout();

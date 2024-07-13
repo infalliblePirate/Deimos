@@ -16,7 +16,7 @@ namespace Deimos {
 
         virtual void bind(uint32_t slot = 0) const override;
 
-        virtual void setData(void* data, u_int32_t size) override;
+        virtual void setData(void* data, uint32_t size) override;
     private:
         std::string m_path;
 
