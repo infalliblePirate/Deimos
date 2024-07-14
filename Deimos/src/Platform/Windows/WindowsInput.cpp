@@ -2,7 +2,7 @@
 
 #include "WindowsInput.h"
 #include "GLFW/glfw3.h"
-#include "Deimos/Application.h"
+#include "Deimos/Core/Application.h"
 
 namespace Deimos {
     Scope<Input> Input::s_instance = createScope<WindowsInput>();
@@ -28,13 +28,13 @@ namespace Deimos {
     }
 
     float WindowsInput::getMouseXImpl() {
-        auto[x, y] = getMousePositionImpl();
-        return x;
+        auto mousePosition = getMousePositionImpl();
+        return mousePosition.first;
     }
 
     float WindowsInput::getMouseYImpl() {
-        auto[x, y] = getMousePositionImpl();
-        return y;
+        auto mousePosition = getMousePositionImpl();
+        return mousePosition.second;
     }
 }
 

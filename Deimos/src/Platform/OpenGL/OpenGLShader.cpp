@@ -94,11 +94,11 @@ namespace Deimos {
         DM_ASSERT(shaderSources.size() <= 2, "We only support 2 shader for now");
         std::array<GLuint, 2> glShaderIDs{};
         int glShaderIDIndex = 0;
-        for (auto &[key, value]: shaderSources) {
-            GLuint shader = glCreateShader(key);
+        for (auto it = shaderSources.begin(); it != shaderSources.end(); ++it) {
+            GLuint shader = glCreateShader(it->first); // Assuming first is key (shader type)
 
-            const GLchar *source = (const GLchar *) value.c_str();
-            glShaderSource(shader, 1, &source, 0);
+            const GLchar *source = (const GLchar *) it->second.c_str(); // Assuming second is value (shader source)
+            glShaderSource(shader, 1, &source, nullptr);
 
             glCompileShader(shader);
 
@@ -122,6 +122,7 @@ namespace Deimos {
             glAttachShader(program, shader);
             glShaderIDs[glShaderIDIndex++] = shader;
         }
+
         glLinkProgram(program);
 
         GLint isLinked = 0;
