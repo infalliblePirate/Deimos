@@ -13,7 +13,10 @@
 namespace Deimos {
     struct Renderer2DStorage {
         Ref<VertexArray> quadVertexArray;
+        Ref<VertexArray> triangleVertexArray;
+        Ref<VertexArray> circleVertexArray;
         Ref<Shader> textureShader;
+        Ref<Shader> plainColorShader;
         Ref<Texture2D> whiteTexture;
     };
 
@@ -24,6 +27,7 @@ namespace Deimos {
 
         s_data = new Renderer2DStorage();
 
+        // QUAD
         s_data->quadVertexArray = Deimos::VertexArray::create();
         float squareVertices[5 * 4] = {
                 -0.5f, -0.5f, 0.0f, 0.f, 0.f,
@@ -55,6 +59,88 @@ namespace Deimos {
 
         s_data->textureShader->bind();
         s_data->textureShader->setInt("u_texture", 0);
+
+
+        // TRIANGLE:
+        s_data->triangleVertexArray = VertexArray::create();
+        float triangleVertices[3 * 7]{
+            -0.5f, -0.5f, 0.0f, 
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
+
+        Ref<VertexBuffer> triangleVB;
+        triangleVB = VertexBuffer::create(triangleVertices, sizeof(triangleVertices));
+        triangleVB->setLayout(
+            {
+                { ShaderDataType::Float3, "a_position" }
+            }
+        );
+
+        s_data->triangleVertexArray->addVertexBuffer(triangleVB);
+
+        unsigned int triangleindices[3] = { 0, 1, 2 };
+
+        Ref<IndexBuffer> triangleIB;
+        triangleIB = IndexBuffer::create(triangleindices, sizeof(triangleindices) / sizeof(unsigned int));
+
+        s_data->triangleVertexArray->setIndexBuffer(triangleIB);
+
+        s_data->plainColorShader = Shader::create(std::string(ASSETS_DIR) + "/shaders/PlainColor.glsl");
+
+
+        // CIRCLE
+        // TODO change from predefined behaviour
+        int vCount = 32; // count of "angles" in a circle
+        float angle = 360.f / vCount;
+        int triangleCount = vCount - 2;
+
+        std::vector<glm::vec3> temp;
+
+        // positions
+        for (size_t i = 0; i < vCount; ++i) {
+            float x = cos(glm::radians(angle * i));
+            float y = sin(glm::radians(angle * i));
+            float z = 0.f;
+
+            temp.push_back(glm::vec3(x, y, z));
+        }
+
+        s_data->circleVertexArray = VertexArray::create();
+
+        float circleVertices[3 * vCount]; // create circle vertices array
+        for (size_t i = 0, j = 0; i < vCount; ++i) {
+            circleVertices[j++] = temp[i].x;
+            circleVertices[j++] = temp[i].y;
+            circleVertices[j++] = temp[i].z;
+        }
+
+        for (int i = 0; i < 3 * 3 * triangleCount; ++i) {
+            std::cout << circleVertices[i] << " ";
+            if ( (i+1) % 3 == 0 ) std::cout << std::endl;
+        }
+
+        Ref<VertexBuffer> circleVB;
+        circleVB = VertexBuffer::create(circleVertices, sizeof(circleVertices));
+        circleVB->setLayout(
+            {
+                { ShaderDataType::Float3, "a_position"}
+            }
+        );
+
+        s_data->circleVertexArray->addVertexBuffer(circleVB);
+
+       unsigned int circleIndices[3 * triangleCount];
+        for (size_t i = 0, j = 0; i < triangleCount; ++i) {
+            circleIndices[j++] = 0; // origin
+            circleIndices[j++] = i + 1;
+            circleIndices[j++] = i + 2;
+        }
+
+        Ref<IndexBuffer> circleIB;
+        circleIB = IndexBuffer::create(circleIndices, sizeof(circleIndices) / sizeof(unsigned int));
+
+        s_data->circleVertexArray->setIndexBuffer(circleIB);
     }
 
     void Renderer2D::shutdown() {
@@ -68,6 +154,9 @@ namespace Deimos {
 
         s_data->textureShader->bind();
         s_data->textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
+
+        s_data->plainColorShader->bind();
+        s_data->plainColorShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
     }
 
     void Renderer2D::endScene() {
@@ -157,4 +246,56 @@ namespace Deimos {
         s_data->quadVertexArray->bind();
         RenderCommand::drawIndexed(s_data->quadVertexArray);
     }
-}
+
+    void Renderer2D::drawTriangle(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        drawTriangle({ position.x, position.y, 0}, size, color, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::drawTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->plainColorShader->bind();
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f} );
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->triangleVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->triangleVertexArray);
+    }
+
+    void Renderer2D::drawRotatedTriangle(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4 &tintColor) {
+        drawRotatedTriangle({ position.x, position.y, 0}, size, color, rotation, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::drawRotatedTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4 &tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->plainColorShader->bind();
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::rotate(glm::mat4(1.f), rotation, { 0, 0, 1}) * glm::scale(glm::mat4(1.f), { size.x, size.y, 1.f} );
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->triangleVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->triangleVertexArray);
+    }
+    
+    void Renderer2D::drawCircle(const glm::vec2 &position, float radius, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        drawCircle({ position.x, position.y, 0.f }, radius, vCount, color, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::drawCircle(const glm::vec3 &position, float radius, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->plainColorShader->bind();
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), { radius, radius, 1.f} );
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->circleVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->circleVertexArray);
+    }
+}   
+
