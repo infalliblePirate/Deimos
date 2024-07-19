@@ -5,11 +5,12 @@
 #include "Sandbox2D.h"
 #include "ExampleLayer.h"
 #include "RocketGame/GameLayer.h"
+#include "ProceduralAnimation/MainLayer.h"
 
 class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
-        pushLayer(new Sandbox2D());
+        pushLayer(new MainLayer());
     }
 
     ~Sandbox() {

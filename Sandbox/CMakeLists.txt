@@ -21,6 +21,9 @@ add_executable(Sandbox src/SandboxApp.cpp
         src/RocketGame/Random.cpp
         src/RocketGame/ParticleSystem.h
         src/RocketGame/ParticleSystem.cpp
+
+        src/ProceduralAnimation/MainLayer.h
+        src/ProceduralAnimation/MainLayer.cpp
         )
 
 # Set include directories for the executable

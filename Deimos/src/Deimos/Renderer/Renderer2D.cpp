@@ -115,11 +115,6 @@ namespace Deimos {
             circleVertices[j++] = temp[i].z;
         }
 
-        for (int i = 0; i < 3 * 3 * triangleCount; ++i) {
-            std::cout << circleVertices[i] << " ";
-            if ( (i+1) % 3 == 0 ) std::cout << std::endl;
-        }
-
         Ref<VertexBuffer> circleVB;
         circleVB = VertexBuffer::create(circleVertices, sizeof(circleVertices));
         circleVB->setLayout(
