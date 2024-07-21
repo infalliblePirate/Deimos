@@ -27,6 +27,14 @@ namespace Deimos {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    void OpenGLRendererAPI::drawLine(const Ref<VertexArray> &vertexArray, float thickness) {
+        DM_PROFILE_FUNCTION();
+
+        glLineWidth(thickness);
+        glDrawElements(GL_LINES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
     void OpenGLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
         glViewport(x, y, width, height);
     }

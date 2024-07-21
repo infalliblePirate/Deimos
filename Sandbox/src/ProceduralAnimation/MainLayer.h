@@ -23,7 +23,7 @@ private:
 private:
     Deimos::OrthographicCameraController m_cameraController;
 
-    glm::vec4 m_bodyColor = {1/60.f, 1/120.f, 1/160.f, 1.f};
+    glm::vec4 m_bodyColor = {95.f/255, 75.f/255, 180.f/255, 1.f};
     struct BodyPart {
         glm::vec3 position;
         float radius;

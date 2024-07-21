@@ -41,6 +41,8 @@ void MainLayer::onUpdate(Timestep timestep) {
             Renderer2D::drawCircle(m_spineJoints[i].position, m_spineJoints[i].radius, 32, m_bodyColor);
         }
         
+        Renderer2D::drawLine({0.8f, 0.5f, 0.5f}, {1.f, -2.f, 0.5}, 5.2f, {1.f, 1.f, 1.f, 1.f});
+        Renderer2D::drawLine({-1.f, 0.5f, 0.5f}, {0.6f, 2.f, 0.5}, 5.2f, {1.f, 1.f, 1.f, 1.f});
 
         Renderer2D::endScene();
     }

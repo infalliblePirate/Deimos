@@ -12,6 +12,7 @@
 
 namespace Deimos {
     struct Renderer2DStorage {
+        Ref<VertexArray> lineVertexArray;
         Ref<VertexArray> quadVertexArray;
         Ref<VertexArray> triangleVertexArray;
         Ref<VertexArray> circleVertexArray;
@@ -26,6 +27,32 @@ namespace Deimos {
         DM_PROFILE_FUNCTION();
 
         s_data = new Renderer2DStorage();
+
+        // LINE
+        s_data->lineVertexArray = VertexArray::create();
+        float lineVertices[2 * 3]{
+            0.0f, 0.0f, 0.0f, 
+            1.f, 0.0f, 0.0f,
+        };
+
+        Ref<VertexBuffer> lineVB;
+        lineVB = VertexBuffer::create(lineVertices, sizeof(lineVertices));
+        lineVB->setLayout(
+            {
+                { ShaderDataType::Float3, "a_position" }
+            }
+        );
+
+        s_data->lineVertexArray->addVertexBuffer(lineVB);
+
+        unsigned int lineindices[2] = { 0, 1 };
+
+        Ref<IndexBuffer> lineIB;
+        lineIB = IndexBuffer::create(lineindices, sizeof(lineindices) / sizeof(unsigned int));
+
+        s_data->lineVertexArray->setIndexBuffer(lineIB);
+
+        s_data->plainColorShader = Shader::create(std::string(ASSETS_DIR) + "/shaders/PlainColor.glsl");
 
         // QUAD
         s_data->quadVertexArray = Deimos::VertexArray::create();
@@ -63,7 +90,7 @@ namespace Deimos {
 
         // TRIANGLE:
         s_data->triangleVertexArray = VertexArray::create();
-        float triangleVertices[3 * 7]{
+        float triangleVertices[3 * 3]{
             -0.5f, -0.5f, 0.0f, 
             0.5f, -0.5f, 0.0f,
             0.0f, 0.5f, 0.0f
@@ -156,6 +183,34 @@ namespace Deimos {
 
     void Renderer2D::endScene() {
         DM_PROFILE_FUNCTION();
+    }
+
+    void Renderer2D::drawLine(const glm::vec2 &start, const glm::vec2 &end, float thickness, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        drawLine({ start.x, start.y, 0.f }, { end.x, end.y, 0.f }, thickness, color, tilingFactor, tintColor );
+    }
+
+    void Renderer2D::drawLine(const glm::vec3 &start, const glm::vec3 &end, float thickness, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->plainColorShader->bind();
+        glm::vec3 direction = end - start; // direction vector
+        float length = glm::length(direction);
+
+        // calculate the angle of rotation in radians
+        float angle = glm::atan(direction.y, direction.x);
+
+        // create transformation matrix
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, start); // move origin
+        transform = glm::rotate(transform, angle, glm::vec3(0, 0, 1));
+        transform = glm::scale(transform, glm::vec3(length, 1.f, 1.0f)); // strech along the x axis
+
+
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->lineVertexArray->bind();
+        RenderCommand::drawLine(s_data->lineVertexArray, thickness);
     }
 
     void Renderer2D::drawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
@@ -259,10 +314,13 @@ namespace Deimos {
         RenderCommand::drawIndexed(s_data->triangleVertexArray);
     }
 
+    /**@param rotation The rotation of the triangle in radians*/
     void Renderer2D::drawRotatedTriangle(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4 &tintColor) {
         drawRotatedTriangle({ position.x, position.y, 0}, size, color, rotation, tilingFactor, tintColor);
     }
 
+
+    /**@param rotation The rotation of the triangle in radians*/
     void Renderer2D::drawRotatedTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4 &tintColor) {
         DM_PROFILE_FUNCTION();
 
