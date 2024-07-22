@@ -17,21 +17,27 @@ public:
     virtual void onImGuiRender() override;
 private:
     void init();
-    void updateJointsPos();
-    glm::vec3 attachToBody(glm::vec3& achnor, glm::vec3& point, float distance);
+    void updateJointsPosAndRotation();
+    float calculateRotationAngle(const glm::vec3 &startVec, const glm::vec3 &endVec);
+    glm::vec3 attachToBody(const glm::vec3& achnor, const glm::vec3& point, float distance);
     bool onMouseMovedEvent(Deimos::MouseMovedEvent &e);
 private:
     Deimos::OrthographicCameraController m_cameraController;
 
-    glm::vec4 m_bodyColor = {95.f/255, 75.f/255, 180.f/255, 1.f};
+    glm::vec4 m_bodyColor = { 95.f/255, 75.f/255, 180.f/255, 1.f };
     struct BodyPart {
-        glm::vec3 position;
+        glm::vec3 pos{0.f};
         float radius;
+        float rotation; // in radians
     };
     const static int m_numJoints = 10;
 
+    glm::vec3 prevPos; // keep track of prev position to calculate how much every circle is rotated
     glm::vec3 m_headPos{0.f};
     glm::vec3 m_pointPos{1.f, 0.5f, 0.f};
     BodyPart m_spineJoints[m_numJoints]{};
+    float m_connectingPoints[m_numJoints * 2]{}; // points that make up a body (x2 for both cides of a circle) 
+    // *O*
+    // *O*
     float m_startDistance = 0.1f;
 };
