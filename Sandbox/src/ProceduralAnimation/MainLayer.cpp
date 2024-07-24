@@ -38,40 +38,37 @@ void MainLayer::onUpdate(Timestep timestep) {
         Renderer2D::beginScene(m_cameraController.getCamera());
 
         // starting positions for the upper and lower points
-        glm::vec3 startPosUp = { m_spineJoints[0].pos.x + (m_spineJoints[0].radius * glm::cos((m_spineJoints[0].rotation) + M_PI / 6)), 
-                                 m_spineJoints[0].pos.y + (m_spineJoints[0].radius * glm::sin((m_spineJoints[0].rotation) + M_PI / 6)), 0.8f };
-        
-        glm::vec3 startPosDown = { m_spineJoints[0].pos.x + (m_spineJoints[0].radius * glm::cos((m_spineJoints[0].rotation) - M_PI / 6)), 
-                                   m_spineJoints[0].pos.y + (m_spineJoints[0].radius * glm::sin((m_spineJoints[0].rotation) - M_PI / 6)), 0.8f };
 
-        Renderer2D::drawLine(startPosUp, startPosDown, 3.0f, m_bodyColor); // connect starting posistions
-        glm::vec3 endPosUp = {};
-        glm::vec3 endPosDown = {};
-        // Renderer2D::drawCircle(startPosUp, 0.02f, 32, {0.f, 0.f, 0.f, 1.f});
-        // Renderer2D::drawCircle(startPosDown, 0.02f, 32, {1.f, 1.f, 1.f, 1.f});
+        glm::vec3 headArbit1 = { m_spineJoints[0].pos.x + (m_spineJoints[0].radius * glm::cos((m_spineJoints[0].rotation) - M_PI / 6)), 
+                                   m_spineJoints[0].pos.y + (m_spineJoints[0].radius * glm::sin((m_spineJoints[0].rotation) - M_PI / 6)), 0.8f }; // head 2nd arbitrary point (lower point)
+
+        glm::vec3 headArbit2 = { m_spineJoints[0].pos.x + (m_spineJoints[0].radius * glm::cos((m_spineJoints[0].rotation) + M_PI / 6)), 
+                                 m_spineJoints[0].pos.y + (m_spineJoints[0].radius * glm::sin((m_spineJoints[0].rotation) + M_PI / 6)), 0.8f }; // head 1st arbitrary point (upper point)
+
+        m_connections[0] = headArbit1;
+        m_connections[1] = headArbit2;
+
+        Renderer2D::drawLine(m_connections[0], m_connections[1], 3.0f, m_bodyColor); // connect starting points
+        glm::vec3 upperPoint = {};
+        glm::vec3 lowerPoint = {};
 
         for (size_t i = 0; i < m_numJoints; ++i) {
-            //Renderer2D::drawCircle(m_spineJoints[i].pos, m_spineJoints[i].radius, 32, m_bodyColor);
-
             // calculate the new positions for the upper and lower points
-            endPosUp = { m_spineJoints[i].pos.x + (m_spineJoints[i].radius * glm::cos((m_spineJoints[i].rotation) + M_PI / 2)), 
+            upperPoint = { m_spineJoints[i].pos.x + (m_spineJoints[i].radius * glm::cos((m_spineJoints[i].rotation) + M_PI / 2)), 
                                    m_spineJoints[i].pos.y + (m_spineJoints[i].radius * glm::sin((m_spineJoints[i].rotation) + M_PI / 2)), 0.8f };
             
-            endPosDown = { m_spineJoints[i].pos.x + (m_spineJoints[i].radius * glm::cos((m_spineJoints[i].rotation) - M_PI / 2)), 
+            lowerPoint = { m_spineJoints[i].pos.x + (m_spineJoints[i].radius * glm::cos((m_spineJoints[i].rotation) - M_PI / 2)), 
                                      m_spineJoints[i].pos.y + (m_spineJoints[i].radius * glm::sin((m_spineJoints[i].rotation) - M_PI / 2)), 0.8f };
 
-            // draw circles at the new positions
-            // Renderer2D::drawCircle(endPosUp, 0.02f, 32, {0.f, 0.f, 0.f, 1.f});
-            // Renderer2D::drawCircle(endPosDown, 0.02f, 32, {1.f, 1.f, 1.f, 1.f});
-
-            Renderer2D::drawLine(startPosUp, endPosUp, 3.0f, m_bodyColor);
-            Renderer2D::drawLine(startPosDown, endPosDown, 3.0f, m_bodyColor);
-            
-            // update the start positions for the next iteration
-            startPosUp = endPosUp;
-            startPosDown = endPosDown;
+            m_connections[i + 2] = upperPoint;
+            m_connections[m_numConnections - i - 1] = lowerPoint;
         }
-        Renderer2D::drawLine(endPosUp, endPosDown, 3.0f, m_bodyColor); // connect finishing posistions
+        
+        // draw lines between the points
+        for (size_t i = 0; i < m_numConnections - 1 ; ++i) {
+            Renderer2D::drawLine(m_connections[i], m_connections[i + 1], 3.0f, m_bodyColor);
+        }
+        Renderer2D::drawLine(m_connections[m_numConnections - 1], m_connections[0], 3.0f, m_bodyColor); // connect finishing points (which close the tail)
 
         Renderer2D::endScene();
     }
@@ -90,7 +87,7 @@ void MainLayer::onImGuiRender() {
 }
 
 void MainLayer::init() {
-    // Init the size of body parts
+    // init the size of body parts
     m_spineJoints[0].radius = 0.1;
     m_spineJoints[1].radius = 0.12;
     m_spineJoints[2].radius = 0.13;

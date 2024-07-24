@@ -31,13 +31,11 @@ private:
         float rotation; // in radians
     };
     const static int m_numJoints = 10;
+    const static int m_numConnections = 2 * m_numJoints + 2; // points that make up a body (x2 for both cides of a circle) + 2 arbitrary for the head
 
-    glm::vec3 prevPos; // keep track of prev position to calculate how much every circle is rotated
     glm::vec3 m_headPos{0.f};
-    glm::vec3 m_pointPos{1.f, 0.5f, 0.f};
     BodyPart m_spineJoints[m_numJoints]{};
-    float m_connectingPoints[m_numJoints * 2]{}; // points that make up a body (x2 for both cides of a circle) 
-    // *O*
-    // *O*
-    float m_startDistance = 0.1f;
+    glm::vec3 m_connections[m_numConnections]{};
+    
+    float m_startDistance = 0.1f; // the offset of the joints (circles) from which body is made up
 };
