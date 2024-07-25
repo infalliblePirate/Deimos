@@ -11,11 +11,14 @@
 #include <glm/glm/gtc/matrix_transform.hpp>
 
 namespace Deimos {
+
     struct Renderer2DStorage {
         Ref<VertexArray> lineVertexArray;
         Ref<VertexArray> quadVertexArray;
         Ref<VertexArray> triangleVertexArray;
         Ref<VertexArray> circleVertexArray;
+        Ref<VertexArray> polygonVertexArray;
+        
         Ref<Shader> textureShader;
         Ref<Shader> plainColorShader;
         Ref<Texture2D> whiteTexture;
@@ -350,5 +353,71 @@ namespace Deimos {
         s_data->circleVertexArray->bind();
         RenderCommand::drawIndexed(s_data->circleVertexArray);
     }
-}   
+    
 
+    void Renderer2D::drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
+        float polygonVertices[vCount * 3];
+        int triangleCount = vCount - 2; // the num of triangles that need to be drawn to make up the shape
+
+        s_data->polygonVertexArray = Deimos::VertexArray::create();
+
+        Ref<VertexBuffer> polygonVB; 
+        for (size_t i = 0, j = 0; i < vCount; ++i) {
+            polygonVertices[j++] = vertices[i].x;
+            polygonVertices[j++] = vertices[i].y;
+            polygonVertices[j++] = vertices[i].z;
+        }
+
+        polygonVB = VertexBuffer::create(polygonVertices, sizeof(polygonVertices));
+        polygonVB->setLayout(
+                {
+                        { ShaderDataType::Float3, "a_position" },
+                });
+        s_data->polygonVertexArray->addVertexBuffer(polygonVB);
+
+        unsigned int polygonIndices[3 * triangleCount];
+        int left = 0;
+        int right = vCount - 1;
+        int index = 0;
+
+        // filled by alternating between vertices from the left and right ends of the vertex list, progressing towards the middle
+        // pattern: 0 1 17
+        //         17 1 16
+        //          1 2 16
+        //         16 2 15
+        //          2 3 15 
+        //             ...
+        //          10 8 9
+        while (left < right) {
+            polygonIndices[index++] = left;
+            polygonIndices[index++] = left + 1;
+            polygonIndices[index++] = right;
+
+            if (left + 1 < right - 1) { // fails for odd number of triangles
+                polygonIndices[index++] = right;
+                polygonIndices[index++] = left + 1;
+                polygonIndices[index++] = right - 1;
+            }
+
+            left++;
+            right--;
+        }
+
+        Ref<IndexBuffer> polygonIB;
+        polygonIB = IndexBuffer::create(polygonIndices, sizeof(polygonIndices) / sizeof(unsigned int));
+
+        s_data->polygonVertexArray->setIndexBuffer(polygonIB);
+
+        DM_ASSERT(m_wasPropsSetterCalled, "The setPolygonProps() function must be called first.");
+        DM_PROFILE_FUNCTION();
+
+        s_data->plainColorShader->bind();
+
+        glm::mat4 transform = glm::mat3(1.f);
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->polygonVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->polygonVertexArray);
+    }
+}

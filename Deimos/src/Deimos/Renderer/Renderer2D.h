@@ -38,6 +38,9 @@ namespace Deimos {
         // Circle with color
         static void drawCircle(const glm::vec2 &position, float radius, int vCount, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
         static void drawCircle(const glm::vec3 &position, float radius, int vCount, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+
+        // Polygon with color
+        static void drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
     };
 }
 

@@ -38,7 +38,6 @@ void MainLayer::onUpdate(Timestep timestep) {
         Renderer2D::beginScene(m_cameraController.getCamera());
 
         // starting positions for the upper and lower points
-
         glm::vec3 headArbit1 = { m_spineJoints[0].pos.x + (m_spineJoints[0].radius * glm::cos((m_spineJoints[0].rotation) - M_PI / 6)), 
                                    m_spineJoints[0].pos.y + (m_spineJoints[0].radius * glm::sin((m_spineJoints[0].rotation) - M_PI / 6)), 0.8f }; // head 2nd arbitrary point (lower point)
 
@@ -48,7 +47,7 @@ void MainLayer::onUpdate(Timestep timestep) {
         m_connections[0] = headArbit1;
         m_connections[1] = headArbit2;
 
-        Renderer2D::drawLine(m_connections[0], m_connections[1], 3.0f, m_bodyColor); // connect starting points
+        Renderer2D::drawLine(m_connections[0], m_connections[1], 8.0f, {1.f, 1.f, 1.f, 1.f}); // connect starting points
         glm::vec3 upperPoint = {};
         glm::vec3 lowerPoint = {};
 
@@ -66,9 +65,11 @@ void MainLayer::onUpdate(Timestep timestep) {
         
         // draw lines between the points
         for (size_t i = 0; i < m_numConnections - 1 ; ++i) {
-            Renderer2D::drawLine(m_connections[i], m_connections[i + 1], 3.0f, m_bodyColor);
+           Renderer2D::drawLine(m_connections[i], m_connections[i + 1], 8.0f, {1.f, 1.f, 1.f, 1.f});
         }
-        Renderer2D::drawLine(m_connections[m_numConnections - 1], m_connections[0], 3.0f, m_bodyColor); // connect finishing points (which close the tail)
+        Renderer2D::drawLine(m_connections[m_numConnections - 1], m_connections[0], 8.0f, {1.f, 1.f, 1.f, 1.f}); // connect finishing points (which close the tail)
+
+        Renderer2D::drawPolygon(m_connections, m_numConnections, m_bodyColor);
 
         Renderer2D::endScene();
     }
