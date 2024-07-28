@@ -9,6 +9,8 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 #include <glm/glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm/gtx/compatibility.hpp>
 
 namespace Deimos {
 
@@ -18,6 +20,7 @@ namespace Deimos {
         Ref<VertexArray> triangleVertexArray;
         Ref<VertexArray> circleVertexArray;
         Ref<VertexArray> polygonVertexArray;
+        Ref<VertexArray> bezierVertexArray;
         
         Ref<Shader> textureShader;
         Ref<Shader> plainColorShader;
@@ -356,6 +359,8 @@ namespace Deimos {
     
 
     void Renderer2D::drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
+        DM_PROFILE_FUNCTION();
+
         float polygonVertices[vCount * 3];
         int triangleCount = vCount - 2; // the num of triangles that need to be drawn to make up the shape
 
@@ -408,9 +413,6 @@ namespace Deimos {
 
         s_data->polygonVertexArray->setIndexBuffer(polygonIB);
 
-        DM_ASSERT(m_wasPropsSetterCalled, "The setPolygonProps() function must be called first.");
-        DM_PROFILE_FUNCTION();
-
         s_data->plainColorShader->bind();
 
         glm::mat4 transform = glm::mat3(1.f);
@@ -419,5 +421,57 @@ namespace Deimos {
 
         s_data->polygonVertexArray->bind();
         RenderCommand::drawIndexed(s_data->polygonVertexArray);
+    }
+
+
+    void Renderer2D::drawBezier(const glm::vec3 &anchor1, const glm::vec3 &control, const glm::vec3 &anchor2, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->bezierVertexArray = VertexArray::create();
+
+        float delta = 0.05; // distance between two consequential points
+        int numComposingPoints = glm::length(anchor2 - anchor1) / delta;
+        int triangleCount = numComposingPoints - 2;
+        float bezierVertecies[numComposingPoints * 3];
+        Ref<VertexBuffer> bezierVB;
+        for (size_t i = 0; i < numComposingPoints; ++i) {
+            float t = i * delta;
+            float x1 = glm::lerp(anchor1.x, control.x, t);
+            float y1 = glm::lerp(anchor1.y, control.y, t);
+            float x2 = glm::lerp(control.x, anchor2.x, t);
+            float y2 = glm::lerp(control.y, anchor2.y, t);
+            float x = glm::lerp(x1, x2, t);
+            float y = glm::lerp(y1, y2, t);
+            float z = 0.f;
+            bezierVertecies[i * 3] = x;
+            bezierVertecies[i * 3 + 1] = y;
+            bezierVertecies[i * 3 + 2] = z;
+        }
+
+        bezierVB = VertexBuffer::create(bezierVertecies, numComposingPoints * 3);
+        bezierVB->setLayout(
+                {
+                        { ShaderDataType::Float3, "a_position" },
+                });
+        s_data->bezierVertexArray->addVertexBuffer(bezierVB);
+
+        unsigned int bezierIndices[3 * triangleCount];
+        for (size_t i = 0, j = 0; i < triangleCount; ++i) {
+            bezierIndices[j++] = 0; // origin
+            bezierIndices[j++] = i + 1;
+            bezierIndices[j++] = i + 2;
+        }
+        Ref<IndexBuffer> bezierIB;
+        bezierIB = IndexBuffer::create(bezierIndices, sizeof(bezierIndices) / sizeof(unsigned int));
+        s_data->bezierVertexArray->setIndexBuffer(bezierIB);
+
+        s_data->plainColorShader->bind();
+
+        glm::mat4 transform = glm::mat3(1.f);
+        s_data->plainColorShader->setMat4("u_transform", transform);
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->bezierVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->bezierVertexArray);
     }
 }

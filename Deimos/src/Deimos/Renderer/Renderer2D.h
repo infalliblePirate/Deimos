@@ -41,6 +41,9 @@ namespace Deimos {
 
         // Polygon with color
         static void drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
+
+        // Quadratic bezier curve
+        static void drawBezier(const glm::vec3 &anchor1, const glm::vec3 &control, const glm::vec3 &anchor2, const glm::vec4 &color, float tilingFactor = 1.f, const glm::vec4& tintColor = glm::vec4{1.f});
     };
 }
 
