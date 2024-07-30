@@ -356,7 +356,6 @@ namespace Deimos {
         s_data->circleVertexArray->bind();
         RenderCommand::drawIndexed(s_data->circleVertexArray);
     }
-    
 
     void Renderer2D::drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
         DM_PROFILE_FUNCTION();
@@ -430,9 +429,10 @@ namespace Deimos {
         s_data->bezierVertexArray = VertexArray::create();
 
         float delta = 0.05; // distance between two consequential points
-        int numComposingPoints = glm::length(anchor2 - anchor1) / delta;
+        int numComposingPoints = 1.f / delta + 1;
         int triangleCount = numComposingPoints - 2;
         float bezierVertecies[numComposingPoints * 3];
+       
         Ref<VertexBuffer> bezierVB;
         for (size_t i = 0; i < numComposingPoints; ++i) {
             float t = i * delta;
@@ -442,13 +442,13 @@ namespace Deimos {
             float y2 = glm::lerp(control.y, anchor2.y, t);
             float x = glm::lerp(x1, x2, t);
             float y = glm::lerp(y1, y2, t);
-            float z = 0.f;
-            bezierVertecies[i * 3] = x;
-            bezierVertecies[i * 3 + 1] = y;
-            bezierVertecies[i * 3 + 2] = z;
+            float z = anchor1.z;
+            bezierVertecies[3 * i] = x;
+            bezierVertecies[3 * i + 1] = y;
+            bezierVertecies[3 * i + 2] = z;
         }
 
-        bezierVB = VertexBuffer::create(bezierVertecies, numComposingPoints * 3);
+        bezierVB = VertexBuffer::create(bezierVertecies, sizeof(bezierVertecies));
         bezierVB->setLayout(
                 {
                         { ShaderDataType::Float3, "a_position" },

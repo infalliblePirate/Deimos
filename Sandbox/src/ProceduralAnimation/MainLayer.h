@@ -31,13 +31,13 @@ private:
         float rotation; // in radians
     };
     const static int m_numJoints = 10;
-    const static int m_numPectoralFins = 5;
+    const static int m_numPectoralFins = 3;
     const static int m_numConnections = 2 * m_numJoints + 2; // points that make up a body (x2 for both cides of a circle) + 2 arbitrary for the head
 
     glm::vec3 m_dirPos{0.f};
     BodyPart m_spineJoints[m_numJoints]{}; // joints that are represented as circles
     glm::vec3 m_connections[m_numConnections]{}; // body connections
-    glm::vec3 pectoralFins[m_numPectoralFins];
+    glm::vec3 m_pectoralFins[m_numPectoralFins];
     
     float m_startDistance = 0.1f; // the offset of the joints (circles) from which body is made up
 };
