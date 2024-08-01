@@ -19,6 +19,7 @@ namespace Deimos {
         Ref<VertexArray> quadVertexArray;
         Ref<VertexArray> triangleVertexArray;
         Ref<VertexArray> circleVertexArray;
+        Ref<VertexArray> ovalVertexArray;
         Ref<VertexArray> polygonVertexArray;
         Ref<VertexArray> bezierVertexArray;
         
@@ -355,6 +356,65 @@ namespace Deimos {
 
         s_data->circleVertexArray->bind();
         RenderCommand::drawIndexed(s_data->circleVertexArray);
+    }
+
+    /**@param rotation The rotation of the oval in radians*/
+    void Renderer2D::drawOval(const glm::vec2 &center, float a, float b, float rotation, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        drawOval({ center.x, center.y, 0.f }, a, b, rotation, color, tilingFactor, tintColor);
+    }
+
+    /**@param rotation The rotation of the oval in radians*/
+    void Renderer2D::drawOval(const glm::vec3 &center, float a, float b, float rotation, const glm::vec4 &color, float tilingFactor, const glm::vec4 &tintColor) {
+        DM_PROFILE_FUNCTION();
+
+        s_data->ovalVertexArray = VertexArray::create();
+
+        float h = center.x;
+        float k = center.y;
+
+        int vCount = 32; // number of vertices
+        float angleIncrement = 2.0f * glm::pi<float>() / vCount;
+
+        std::vector<glm::vec3> temp(vCount);
+        for (int i = 0; i < vCount; ++i) {
+            float theta = i * angleIncrement;
+            float x = a * cos(theta);
+            float y = b * sin(theta);
+            temp[i] = glm::vec3(x, y, 0.0f);
+        }
+
+        // apply transformations
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), center)
+                            * glm::rotate(glm::mat4(1.f), rotation, glm::vec3(0, 0, 1))
+                            * glm::scale(glm::mat4(1.f), glm::vec3(1.f, 1.f, 1.f));
+
+        std::vector<float> ovalVertices;
+        for (const auto& vertex : temp) {
+            glm::vec4 transformedVertex = transform * glm::vec4(vertex, 1.0f);
+            ovalVertices.push_back(transformedVertex.x);
+            ovalVertices.push_back(transformedVertex.y);
+            ovalVertices.push_back(transformedVertex.z);
+        }
+
+        Ref<VertexBuffer> ovalVB = VertexBuffer::create(ovalVertices.data(), ovalVertices.size() * sizeof(float));
+        ovalVB->setLayout({ { ShaderDataType::Float3, "a_position" } });
+        s_data->ovalVertexArray->addVertexBuffer(ovalVB);
+
+        unsigned int ovalIndices[3 * (vCount - 2)];
+        for (size_t i = 0, j = 0; i < vCount - 2; ++i) {
+            ovalIndices[j++] = 0; // origin point
+            ovalIndices[j++] = i + 1;
+            ovalIndices[j++] = i + 2;
+        }
+
+        Ref<IndexBuffer> ovalIB = IndexBuffer::create(ovalIndices, sizeof(ovalIndices) / sizeof(unsigned int));
+        s_data->ovalVertexArray->setIndexBuffer(ovalIB);
+        s_data->plainColorShader->bind();
+        s_data->plainColorShader->setMat4("u_transform", glm::mat4(1.0f));
+        s_data->plainColorShader->setFloat4("u_color", color * tintColor);
+
+        s_data->ovalVertexArray->bind();
+        RenderCommand::drawIndexed(s_data->ovalVertexArray);
     }
 
     void Renderer2D::drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {

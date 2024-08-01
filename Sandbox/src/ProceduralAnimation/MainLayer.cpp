@@ -70,7 +70,10 @@ void MainLayer::onUpdate(Timestep timestep) {
 
         Renderer2D::drawPolygon(m_connections, m_numConnections, m_bodyColor);
 
-        Renderer2D::drawBezier(m_pectoralFins[0], m_pectoralFins[1],m_pectoralFins[2], {1.f, 1.f, 1.f, 1.f});
+        Renderer2D::drawOval(m_fins[0].pos, 0.07f, 0.15f, m_fins[0].rotation + M_PI / 4, {1.f, 0.f, 0.f, 1.f});
+        Renderer2D::drawOval(m_fins[1].pos, 0.07f, 0.15f, m_fins[1].rotation - M_PI / 4, {1.f, 0.f, 0.f, 1.f});
+        Renderer2D::drawOval(m_fins[2].pos, 0.05f, 0.09f, m_fins[2].rotation + M_PI / 8, {1.f, 0.f, 0.f, 1.f});
+        Renderer2D::drawOval(m_fins[3].pos, 0.05f, 0.09f, m_fins[3].rotation - M_PI / 8, {1.f, 0.f, 0.f, 1.f});
         Renderer2D::endScene();
     }
 
@@ -112,13 +115,25 @@ void MainLayer::updateJointsPosAndRotation() {
         float rotationAngle = calculateRotationAngle(glm::vec3(1, 0.f, 0.f), vec); // angle between the positive direction of the Ox axis and the deviation vector
         m_spineJoints[i].rotation = rotationAngle;
     }
-    m_pectoralFins[0] = { m_spineJoints[2].pos.x + (m_spineJoints[2].radius * glm::cos((m_spineJoints[2].rotation) + M_PI / 2)), 
-                          m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) + M_PI / 2)), 0.6f };
 
-    m_pectoralFins[2] = { m_spineJoints[4].pos.x + (m_spineJoints[4].radius * glm::cos((m_spineJoints[4].rotation) + M_PI / 3)), 
-                          m_spineJoints[4].pos.y + (m_spineJoints[4].radius * glm::sin((m_spineJoints[4].rotation) + M_PI / 3)), 0.6f };
-    m_pectoralFins[1] = { m_pectoralFins[2].x + 0.1f * (glm::cos((m_spineJoints[4].rotation) + M_PI / 2)), 
-                          m_pectoralFins[2].y + 0.1f * (glm::sin((m_spineJoints[4].rotation)) + M_PI / 2), 0.6f };
+    // Fins:
+    {
+        m_fins[0].pos = { m_spineJoints[2].pos.x + (m_spineJoints[2].radius * glm::cos((m_spineJoints[2].rotation) + M_PI / 3)), 
+                          m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) + M_PI / 3)), 0.6f };
+        m_fins[0].rotation = m_spineJoints[1].rotation; // take rotation from the previous joint
+
+        m_fins[1].pos = { m_spineJoints[2].pos.x + (m_spineJoints[2].radius * glm::cos((m_spineJoints[2].rotation) - M_PI / 3)), 
+                            m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) - M_PI / 3)), 0.6f };
+        m_fins[1].rotation = m_spineJoints[1].rotation;
+
+        m_fins[2].pos = { m_spineJoints[7].pos.x + (m_spineJoints[7].radius * glm::cos((m_spineJoints[7].rotation) + M_PI / 3)), 
+                            m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) + M_PI / 3)), 0.6f };
+        m_fins[2].rotation = m_spineJoints[6].rotation;
+
+        m_fins[3].pos = { m_spineJoints[7].pos.x + (m_spineJoints[7].radius * glm::cos((m_spineJoints[7].rotation) - M_PI / 3)), 
+                            m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) - M_PI / 3)), 0.6f };
+        m_fins[3].rotation = m_spineJoints[6].rotation;
+    }
 }
 
 float MainLayer::calculateRotationAngle(const glm::vec3 &startVec, const glm::vec3 &endVec) {
