@@ -68,12 +68,30 @@ void MainLayer::onUpdate(Timestep timestep) {
         }
         Renderer2D::drawLine(m_connections[m_numConnections - 1], m_connections[0], 8.0f, {1.f, 1.f, 1.f, 1.f}); // connect finishing points (which close the tail)
 
+        // draw body
         Renderer2D::drawPolygon(m_connections, m_numConnections, m_bodyColor);
 
-        Renderer2D::drawOval(m_fins[0].pos, 0.07f, 0.15f, m_fins[0].rotation + M_PI / 4, {1.f, 0.f, 0.f, 1.f});
-        Renderer2D::drawOval(m_fins[1].pos, 0.07f, 0.15f, m_fins[1].rotation - M_PI / 4, {1.f, 0.f, 0.f, 1.f});
-        Renderer2D::drawOval(m_fins[2].pos, 0.05f, 0.09f, m_fins[2].rotation + M_PI / 8, {1.f, 0.f, 0.f, 1.f});
-        Renderer2D::drawOval(m_fins[3].pos, 0.05f, 0.09f, m_fins[3].rotation - M_PI / 8, {1.f, 0.f, 0.f, 1.f});
+        // draw fins
+        {
+            Renderer2D::drawOval(m_fins[0].pos, 0.07f, 0.15f, m_fins[0].rotation + M_PI / 4, m_finColor);
+            Renderer2D::drawOval(m_fins[1].pos, 0.07f, 0.15f, m_fins[1].rotation - M_PI / 4, m_finColor);
+            Renderer2D::drawOval(m_fins[2].pos, 0.05f, 0.09f, m_fins[2].rotation + M_PI / 8, m_finColor);
+            Renderer2D::drawOval(m_fins[3].pos, 0.05f, 0.09f, m_fins[3].rotation - M_PI / 8, m_finColor);
+        }
+
+        // the dorsal fin
+        glm::vec3 controlPoint{};
+        float x{}, y{}, z{};
+        for(size_t i = 0; i < 4; ++i) {
+            x += m_dorsalFin[i].x;
+            y += m_dorsalFin[i].y;
+            z += m_dorsalFin[i].z;
+        }
+        controlPoint = {x / 3.4, y / 3.4, z / 4};
+        Renderer2D::drawBezier(m_dorsalFin[0], controlPoint, m_dorsalFin[3], m_finColor);
+
+        // the caudial fin
+        Renderer2D::drawRotatedTriangle(m_caudialFin.pos, {0.14f, 0.28f}, m_finColor, m_caudialFin.rotation + M_PI / 2);
         Renderer2D::endScene();
     }
 
@@ -107,6 +125,7 @@ void MainLayer::init() {
 void MainLayer::updateJointsPosAndRotation() {
     m_spineJoints[0].rotation = calculateRotationAngle(glm::vec3(1, 0.f, 0.f), m_dirPos - m_spineJoints[0].pos);
     m_spineJoints[0].pos = attachToBody(m_dirPos, m_spineJoints[0].pos, m_startDistance);
+
     for (size_t i = 1; i < m_numJoints; ++i) {
         glm::vec3 prevPos = m_spineJoints[i].pos;
         m_spineJoints[i].pos = attachToBody(m_spineJoints[i - 1].pos, m_spineJoints[i].pos, m_startDistance + (i * 0.002));
@@ -115,24 +134,33 @@ void MainLayer::updateJointsPosAndRotation() {
         float rotationAngle = calculateRotationAngle(glm::vec3(1, 0.f, 0.f), vec); // angle between the positive direction of the Ox axis and the deviation vector
         m_spineJoints[i].rotation = rotationAngle;
     }
+    
+    // setup for the caudial fin 
+    m_caudialFin.pos = attachToBody(m_spineJoints[m_numJoints - 1].pos, m_caudialFin.pos, m_startDistance - (m_numJoints * 0.008));
+    m_caudialFin.rotation = calculateRotationAngle(glm::vec3(1, 0.f, 0.f), m_caudialFin.pos - m_spineJoints[m_numJoints - 1].pos);
 
-    // Fins:
+    // fins:
     {
         m_fins[0].pos = { m_spineJoints[2].pos.x + (m_spineJoints[2].radius * glm::cos((m_spineJoints[2].rotation) + M_PI / 3)), 
                           m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) + M_PI / 3)), 0.6f };
         m_fins[0].rotation = m_spineJoints[1].rotation; // take rotation from the previous joint
 
         m_fins[1].pos = { m_spineJoints[2].pos.x + (m_spineJoints[2].radius * glm::cos((m_spineJoints[2].rotation) - M_PI / 3)), 
-                            m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) - M_PI / 3)), 0.6f };
+                          m_spineJoints[2].pos.y + (m_spineJoints[2].radius * glm::sin((m_spineJoints[2].rotation) - M_PI / 3)), 0.6f };
         m_fins[1].rotation = m_spineJoints[1].rotation;
 
         m_fins[2].pos = { m_spineJoints[7].pos.x + (m_spineJoints[7].radius * glm::cos((m_spineJoints[7].rotation) + M_PI / 3)), 
-                            m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) + M_PI / 3)), 0.6f };
+                          m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) + M_PI / 3)), 0.6f };
         m_fins[2].rotation = m_spineJoints[6].rotation;
 
         m_fins[3].pos = { m_spineJoints[7].pos.x + (m_spineJoints[7].radius * glm::cos((m_spineJoints[7].rotation) - M_PI / 3)), 
-                            m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) - M_PI / 3)), 0.6f };
+                          m_spineJoints[7].pos.y + (m_spineJoints[7].radius * glm::sin((m_spineJoints[7].rotation) - M_PI / 3)), 0.6f };
         m_fins[3].rotation = m_spineJoints[6].rotation;
+    }
+
+    // dorsal fin
+    for(size_t i = 0; i < 4; ++i) {
+        m_dorsalFin[i] = { m_spineJoints[i + 3].pos.x, m_spineJoints[i + 3].pos.y, 1.f };
     }
 }
 

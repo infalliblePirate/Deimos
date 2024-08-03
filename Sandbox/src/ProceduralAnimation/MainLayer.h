@@ -25,6 +25,7 @@ private:
     Deimos::OrthographicCameraController m_cameraController;
 
     glm::vec4 m_bodyColor = { 95.f/255, 75.f/255, 180.f/255, 1.f };
+    glm::vec4 m_finColor = { 255.f/255, 127.f/255, 130.f/255, 1.f };
     struct BodyPart {
         glm::vec3 pos{0.f};
         float radius;
@@ -42,6 +43,8 @@ private:
     BodyPart m_spineJoints[m_numJoints]{}; // joints that are represented as circles
     glm::vec3 m_connections[m_numConnections]{}; // body connections
     Fin m_fins[m_numFins];
+    Fin m_caudialFin;
+    glm::vec3 m_dorsalFin[4]; // drawn as a bezier curve 
     
     float m_startDistance = 0.1f; // the offset of the joints (circles) from which body is made up
 };
