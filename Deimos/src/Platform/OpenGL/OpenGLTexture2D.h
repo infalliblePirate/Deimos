@@ -7,7 +7,7 @@
 namespace Deimos {
     class OpenGLTexture2D : public Texture2D {
     public:
-        OpenGLTexture2D(u_int32_t width, u_int32_t height);
+        OpenGLTexture2D(uint32_t width, uint32_t height);
         OpenGLTexture2D(const std::string& path);
         virtual ~OpenGLTexture2D() override;
 

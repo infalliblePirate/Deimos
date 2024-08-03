@@ -3,7 +3,7 @@
 
 namespace Deimos {
     
-    OpenGLTexture2D::OpenGLTexture2D(u_int32_t width, u_int32_t height) : m_width(width), m_height(height) {
+    OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(width), m_height(height) {
         DM_PROFILE_FUNCTION();
 
         m_internalFormat = GL_RGB8;
@@ -70,7 +70,7 @@ namespace Deimos {
         glBindTextureUnit(slot, m_rendererID);
     }
 
-    void OpenGLTexture2D::setData(void *data, u_int32_t size) {
+    void OpenGLTexture2D::setData(void *data, uint32_t size) {
         DM_PROFILE_FUNCTION();
 
         uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
