@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.20)
-project(dummy)
-set(SOURCE ../imgui/examples/example_glfw_opengl3/main.cpp)
-include_directories(../imgui/backends/imgui_impl_opengl3.h ../imgui/backends/imgui_impl_glfw.h)
-add_library(dummy OBJECT ${SOURCE})
-set_property(TARGET dummy PROPERTY EXCLUDE_FROM_ALL TRUE)
