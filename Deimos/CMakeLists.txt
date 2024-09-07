@@ -1,8 +1,7 @@
-# Define the interface library
-add_library(_Deimos INTERFACE)
-
 # Group source files based on platform
 set(COMMON_SOURCES
+        ./config.h
+
         src/Deimos/Core/Application.cpp
         src/Deimos/Core/EntryPoint.h
         src/Deimos/Core/Layer.cpp
@@ -33,8 +32,11 @@ set(COMMON_SOURCES
         src/Deimos/Renderer/Renderer2D.h
 )
 
-# Add compile options for SSE support
-add_compile_options(-msse2 -msse3) # Example flags for SSE2 and SSE3 support
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options(-msse2 -msse3)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options(/arch:SSE2)
+endif()
 
 # Apply compile options to stb_image.cpp
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -63,7 +65,7 @@ endif ()
 # Add Deimos library
 add_library(Deimos STATIC ${COMMON_SOURCES} ${PLATFORM_SOURCES})
 
-set(CMAKE_BUILD_TYPE "Release")
+#set(CMAKE_BUILD_TYPE "Release")
 # Set default build type to Debug
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -94,7 +96,6 @@ target_include_directories(Deimos PUBLIC vendor)
 add_subdirectory(vendor/spdlog)
 
 # Add spdlog library
-target_compile_options(spdlog PRIVATE -fPIC)
 target_link_libraries(Deimos PUBLIC spdlog::spdlog)
 
 # glfw disable the build for tests, examples, documentation:
@@ -147,9 +148,7 @@ file(GLOB IMGUI_GLOB
         ${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.cpp)
 add_library(imgui STATIC ${IMGUI_GLOB})
 target_include_directories(imgui PRIVATE ${IMGUI_PATH})
-target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(imgui PRIVATE glfw)
-target_compile_options(imgui PRIVATE -fPIC)
 target_link_libraries(Deimos PUBLIC imgui)
 
 # Add glm
@@ -168,3 +167,12 @@ set_target_properties(Deimos PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${outputdir}/Deimos"
 )
+
+# Use configure_file to generate config.h with directory variables
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config.h
+)
+
+# Add the binary directory to the include path so that the generated config.h can be found
+include_directories(${CMAKE_CURRENT_BINARY_DIR})

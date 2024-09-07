@@ -142,15 +142,16 @@ namespace Deimos {
 
         s_data->circleVertexArray = VertexArray::create();
 
-        float circleVertices[3 * vCount]; // create circle vertices array
-        for (size_t i = 0, j = 0; i < vCount; ++i) {
-            circleVertices[j++] = temp[i].x;
-            circleVertices[j++] = temp[i].y;
-            circleVertices[j++] = temp[i].z;
+        std::vector<float> circleVertices;
+        circleVertices.reserve(3 * vCount); // create circle vertices array
+        for (size_t i = 0; i < vCount; ++i) {
+            circleVertices.push_back(temp[i].x);
+            circleVertices.push_back(temp[i].y);
+            circleVertices.push_back(temp[i].z);
         }
 
         Ref<VertexBuffer> circleVB;
-        circleVB = VertexBuffer::create(circleVertices, sizeof(circleVertices));
+        circleVB = VertexBuffer::create(circleVertices.data(), sizeof(float) * circleVertices.size());
         circleVB->setLayout(
             {
                 { ShaderDataType::Float3, "a_position"}
@@ -159,15 +160,16 @@ namespace Deimos {
 
         s_data->circleVertexArray->addVertexBuffer(circleVB);
 
-       unsigned int circleIndices[3 * triangleCount];
-        for (size_t i = 0, j = 0; i < triangleCount; ++i) {
-            circleIndices[j++] = 0; // origin
-            circleIndices[j++] = i + 1;
-            circleIndices[j++] = i + 2;
+       std::vector<unsigned int> circleIndices;
+       circleIndices.resize(3 * triangleCount);
+        for (size_t i = 0; i < triangleCount; ++i) {
+            circleIndices.push_back(0); // origin
+            circleIndices.push_back(i + 1);
+            circleIndices.push_back(i + 2);
         }
 
         Ref<IndexBuffer> circleIB;
-        circleIB = IndexBuffer::create(circleIndices, sizeof(circleIndices) / sizeof(unsigned int));
+        circleIB = IndexBuffer::create(circleIndices.data(), sizeof(unsigned int) * circleIndices.size() / sizeof(unsigned int));
 
         s_data->circleVertexArray->setIndexBuffer(circleIB);
     }
@@ -326,7 +328,6 @@ namespace Deimos {
         drawRotatedTriangle({ position.x, position.y, 0}, size, color, rotation, tilingFactor, tintColor);
     }
 
-
     /**@param rotation The rotation of the triangle in radians*/
     void Renderer2D::drawRotatedTriangle(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color, float rotation, float tilingFactor, const glm::vec4 &tintColor) {
         DM_PROFILE_FUNCTION();
@@ -400,14 +401,15 @@ namespace Deimos {
         ovalVB->setLayout({ { ShaderDataType::Float3, "a_position" } });
         s_data->ovalVertexArray->addVertexBuffer(ovalVB);
 
-        unsigned int ovalIndices[3 * (vCount - 2)];
-        for (size_t i = 0, j = 0; i < vCount - 2; ++i) {
-            ovalIndices[j++] = 0; // origin point
-            ovalIndices[j++] = i + 1;
-            ovalIndices[j++] = i + 2;
+        std::vector<unsigned int> ovalIndices;
+        ovalIndices.resize(3 * (vCount - 2));
+        for (size_t i = 0; i < vCount - 2; ++i) {
+            ovalIndices.push_back(0); // origin point
+            ovalIndices.push_back(i + 1);
+            ovalIndices.push_back(i + 2);
         }
 
-        Ref<IndexBuffer> ovalIB = IndexBuffer::create(ovalIndices, sizeof(ovalIndices) / sizeof(unsigned int));
+        Ref<IndexBuffer> ovalIB = IndexBuffer::create(ovalIndices.data(), sizeof(unsigned int) * ovalIndices.size() / sizeof(unsigned int));
         s_data->ovalVertexArray->setIndexBuffer(ovalIB);
         s_data->plainColorShader->bind();
         s_data->plainColorShader->setMat4("u_transform", glm::mat4(1.0f));
@@ -417,10 +419,12 @@ namespace Deimos {
         RenderCommand::drawIndexed(s_data->ovalVertexArray);
     }
 
+
     void Renderer2D::drawPolygon(const glm::vec3 *vertices, int vCount, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
         DM_PROFILE_FUNCTION();
 
-        float polygonVertices[vCount * 3];
+        std::vector<float> polygonVertices;
+        polygonVertices.resize(vCount * 3);
         int triangleCount = vCount - 2; // the num of triangles that need to be drawn to make up the shape
 
         s_data->polygonVertexArray = Deimos::VertexArray::create();
@@ -432,14 +436,15 @@ namespace Deimos {
             polygonVertices[j++] = vertices[i].z;
         }
 
-        polygonVB = VertexBuffer::create(polygonVertices, sizeof(polygonVertices));
+        polygonVB = VertexBuffer::create(polygonVertices.data(), sizeof(float) * polygonVertices.size());
         polygonVB->setLayout(
                 {
                         { ShaderDataType::Float3, "a_position" },
                 });
         s_data->polygonVertexArray->addVertexBuffer(polygonVB);
 
-        unsigned int polygonIndices[3 * triangleCount];
+        std::vector<unsigned int> polygonIndices;
+        polygonIndices.resize(3 * triangleCount);
         int left = 0;
         int right = vCount - 1;
         int index = 0;
@@ -453,14 +458,14 @@ namespace Deimos {
         //             ...
         //          10 8 9
         while (left < right) {
-            polygonIndices[index++] = left;
-            polygonIndices[index++] = left + 1;
-            polygonIndices[index++] = right;
+            polygonIndices.push_back(left);
+            polygonIndices.push_back(left + 1);
+            polygonIndices.push_back(right);
 
             if (left + 1 < right - 1) { // fails for odd number of triangles
-                polygonIndices[index++] = right;
-                polygonIndices[index++] = left + 1;
-                polygonIndices[index++] = right - 1;
+                polygonIndices.push_back(right);
+                polygonIndices.push_back(left + 1);
+                polygonIndices.push_back(right - 1);
             }
 
             left++;
@@ -468,7 +473,7 @@ namespace Deimos {
         }
 
         Ref<IndexBuffer> polygonIB;
-        polygonIB = IndexBuffer::create(polygonIndices, sizeof(polygonIndices) / sizeof(unsigned int));
+        polygonIB = IndexBuffer::create(polygonIndices.data(), sizeof(unsigned int) * polygonIndices.size() / sizeof(unsigned int));
 
         s_data->polygonVertexArray->setIndexBuffer(polygonIB);
 
@@ -482,7 +487,6 @@ namespace Deimos {
         RenderCommand::drawIndexed(s_data->polygonVertexArray);
     }
 
-
     void Renderer2D::drawBezier(const glm::vec3 &anchor1, const glm::vec3 &control, const glm::vec3 &anchor2, const glm::vec4 &color, float tilingFactor, const glm::vec4& tintColor) {
         DM_PROFILE_FUNCTION();
 
@@ -491,7 +495,8 @@ namespace Deimos {
         float delta = 0.05; // distance between two consequential points
         int numComposingPoints = 1.f / delta + 1;
         int triangleCount = numComposingPoints - 2;
-        float bezierVertecies[numComposingPoints * 3];
+        std::vector<float> bezierVertecies;
+        bezierVertecies.resize(numComposingPoints * 3);
        
         Ref<VertexBuffer> bezierVB;
         for (size_t i = 0; i < numComposingPoints; ++i) {
@@ -508,21 +513,22 @@ namespace Deimos {
             bezierVertecies[3 * i + 2] = z;
         }
 
-        bezierVB = VertexBuffer::create(bezierVertecies, sizeof(bezierVertecies));
+        bezierVB = VertexBuffer::create(bezierVertecies.data(), sizeof(float) * bezierVertecies.size());
         bezierVB->setLayout(
                 {
                         { ShaderDataType::Float3, "a_position" },
                 });
         s_data->bezierVertexArray->addVertexBuffer(bezierVB);
 
-        unsigned int bezierIndices[3 * triangleCount];
-        for (size_t i = 0, j = 0; i < triangleCount; ++i) {
-            bezierIndices[j++] = 0; // origin
-            bezierIndices[j++] = i + 1;
-            bezierIndices[j++] = i + 2;
+        std::vector<unsigned int> bezierIndices;
+        bezierIndices.resize(3 * triangleCount);
+        for (size_t i = 0; i < triangleCount; ++i) {
+            bezierIndices.push_back(0); // origin
+            bezierIndices.push_back(i + 1);
+            bezierIndices.push_back(i + 2);
         }
         Ref<IndexBuffer> bezierIB;
-        bezierIB = IndexBuffer::create(bezierIndices, sizeof(bezierIndices) / sizeof(unsigned int));
+        bezierIB = IndexBuffer::create(bezierIndices.data(), sizeof(unsigned int) * bezierIndices.size() / sizeof(unsigned int));
         s_data->bezierVertexArray->setIndexBuffer(bezierIB);
 
         s_data->plainColorShader->bind();

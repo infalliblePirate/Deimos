@@ -10,7 +10,7 @@
 class Sandbox : public Deimos::Application {
 public:
     Sandbox() {
-        pushLayer(new MainLayer());
+        pushLayer(new GameLayer());
     }
 
     ~Sandbox() {
