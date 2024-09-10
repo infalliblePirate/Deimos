@@ -39,10 +39,14 @@ void Sandbox2D::onUpdate(Deimos::Timestep timestep) {
     {
         DM_PROFILE_SCOPE("Renderer Draw");
         Deimos::Renderer2D::beginScene(m_cameraController.getCamera());
-        Deimos::Renderer2D::drawQuad({1.f, 1.f}, {1.f, 1.f}, m_girlTexture, 1.f, { 0.9f, 1.f, 0.9f, 1.f });
-        Deimos::Renderer2D::drawRotatedQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f }, glm::radians(45.f), 1.f);
-        Deimos::Renderer2D::drawRotatedTriangle({ 10.f, 10.f, 0.2f}, {1.f, 1.f}, { 0.3f, 0.8f, 0.9f, 1.f }, 30);
-        Deimos::Renderer2D::drawCircle( { 0.f, 0.f, 0.3 }, 3.f, 6, { 0.9f, 0.3f, 1.f, 1.f });
+        Deimos::Renderer2D::drawQuad({0.f, 0.f, 1.f}, {1.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
+        Deimos::Renderer2D::drawQuad({0.f, 1.f, 1.f}, {1.f, 1.f}, {1.f, 0.f, 1.f, 1.f});
+        Deimos::Renderer2D::drawQuad({0.f, 3.f, 1.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 1.f});
+        Deimos::Renderer2D::drawQuad({-1.f, 1.f, 1.f}, {1.f, 1.f}, {1.f, 1.f, 0.f, 1.f});
+
+        //Deimos::Renderer2D::drawRotatedQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f }, glm::radians(45.f), 1.f);
+        //Deimos::Renderer2D::drawRotatedTriangle({ 10.f, 10.f, 0.2f}, {1.f, 1.f}, { 0.3f, 0.8f, 0.9f, 1.f }, 30);
+        //Deimos::Renderer2D::drawCircle( { 0.f, 0.f, 0.3 }, 3.f, 6, { 0.9f, 0.3f, 1.f, 1.f });
         Deimos::Renderer2D::endScene();
     }
 }
