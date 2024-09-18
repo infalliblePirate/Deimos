@@ -38,6 +38,9 @@ void Sandbox2D::onUpdate(Deimos::Timestep timestep) {
 
     {
         DM_PROFILE_SCOPE("Renderer Draw");
+        static float rotation = 0.f;
+        rotation += timestep * 50.f;
+
         Deimos::Renderer2D::beginScene(m_cameraController.getCamera());
         Deimos::Renderer2D::drawQuad({0.f, 0.f, 1.f}, {1.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
         Deimos::Renderer2D::drawQuad({0.f, 1.f, 1.f}, {1.f, 1.f}, {1.f, 0.f, 1.f, 1.f});
@@ -49,6 +52,9 @@ void Sandbox2D::onUpdate(Deimos::Timestep timestep) {
         Deimos::Renderer2D::drawQuad({-2.f, 1.f, 1.f}, {1.f, 1.f}, goTexture);
         Deimos::Renderer2D::drawQuad({-4.f, 1.f, 1.f}, {1.f, 1.f}, crossTexture);
         Deimos::Renderer2D::drawQuad({-5.f, 1.f, 1.f}, {1.f, 1.f}, chessTexture);
+        Deimos::Renderer2D::drawRotatedQuad({-6.f, 1.f, 1.f}, {2.f, 1.f}, goTexture, -45);
+        Deimos::Renderer2D::drawRotatedQuad({-8.f, 1.f, 1.f}, {2.f, 1.f}, {1.f, 0.7f, 0.85f, 1.f}, rotation);
+
     
         //Deimos::Renderer2D::drawRotatedQuad({ 0.f, 0.f, -0.1f }, { 10.f, 10.f }, { 0.4f, 0.5f, 0.6f, 1.f }, glm::radians(45.f), 1.f);
         //Deimos::Renderer2D::drawRotatedTriangle({ 10.f, 10.f, 0.2f}, {1.f, 1.f}, { 0.3f, 0.8f, 0.9f, 1.f }, 30);
